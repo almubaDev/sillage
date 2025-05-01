@@ -28,7 +28,6 @@ msgstr "Recommend"
 msgid "Perfil"
 msgstr "Profile"
 
-
 # Template: users/login.html
 msgid "Iniciar sesión"
 msgstr "Log in"
@@ -39,41 +38,150 @@ msgstr "Sign in"
 msgid "¿No tienes cuenta? <a href=\"{{ register_url }}\" class=\"text-[var(--accent)] font-medium underline\">Regístrate aquí</a>."
 msgstr "Don't have an account? <a href=\"{{ register_url }}\" class=\"text-[var(--accent)] font-medium underline\">Sign up here</a>."
 
-
 # Template: users/register.html
-msgid "Create an account"
+msgid "Crear una cuenta"
 msgstr "Create an account"
 
-msgid "Register"
+msgid "Registrarse"
 msgstr "Register"
 
-msgid "Already have an account? <a href=\"{{ login_url }}\" class=\"text-[var(--accent)] font-medium underline\">Log in here</a>."
+msgid "¿Ya tienes cuenta? <a href=\"{{ login_url }}\" class=\"text-[var(--accent)] font-medium underline\">Inicia sesión aquí</a>."
 msgstr "Already have an account? <a href=\"{{ login_url }}\" class=\"text-[var(--accent)] font-medium underline\">Log in here</a>."
 
-
 # Template: users/perfil.html
-msgid "My Profile"
-msgstr "My Profile"
+msgid "Mi perfil"
+msgstr "My profile"
 
-msgid "Email"
+msgid "Correo electrónico"
 msgstr "Email"
 
-msgid "Subscription"
+msgid "Suscripción"
 msgstr "Subscription"
 
-msgid "Active"
+msgid "Activa"
 msgstr "Active"
 
-msgid "Inactive"
+msgid "Inactiva"
 msgstr "Inactive"
 
-msgid "Language"
+msgid "Consultas restantes"
+msgstr "Remaining queries"
+
+msgid "Idioma"
 msgstr "Language"
 
-msgid "Unsubscribe"
+msgid "Cancelar suscripción"
 msgstr "Unsubscribe"
 
-msgid "Log out"
+msgid "Cerrar sesión"
 msgstr "Log out"
 
+# Mensajes de éxito/error
+msgid "Te has dado de baja correctamente."
+msgstr "You have unsubscribed successfully."
 
+
+# Template: perfumes/coleccion.html
+
+msgid "Mi colección de perfumes"
+msgstr "My perfume collection"
+
+msgid "Perfumista"
+msgstr "Perfumer"
+
+msgid "Concentración"
+msgstr "Concentration"
+
+msgid "Eliminar perfume"
+msgstr "Delete perfume"
+
+msgid "Aún no has registrado perfumes."
+msgstr "You haven't registered any perfumes yet."
+
+msgid "Registrar nuevo perfume"
+msgstr "Register new perfume"
+
+msgid "Nombre"
+msgstr "Name"
+
+msgid "Marca"
+msgstr "Brand"
+
+msgid "Perfumista (opcional)"
+msgstr "Perfumer (optional)"
+
+msgid "Seleccionar imagen"
+msgstr "Select image"
+
+msgid "Guardar"
+msgstr "Save"
+
+msgid "Cancelar"
+msgstr "Cancel"
+
+
+# formulario.html
+msgid "Bienvenido a tu recomendador de perfumes"
+msgstr "Welcome to your perfume recommender"
+
+msgid "Obtén la mejor sugerencia según tu ocasión, vestimenta y contexto."
+msgstr "Get the best suggestion based on your occasion, outfit, and context."
+
+msgid "Recomendar"
+msgstr "Recommend"
+
+msgid "Paso 1: Detalles del evento"
+msgstr "Step 1: Event details"
+
+msgid "Fecha del evento"
+msgstr "Event date"
+
+msgid "Hora del evento"
+msgstr "Event time"
+
+msgid "Ocasión"
+msgstr "Occasion"
+
+msgid "Expectativa emocional"
+msgstr "Emotional expectation"
+
+msgid "Vestimenta"
+msgstr "Outfit"
+
+msgid "Tipo de lugar"
+msgstr "Type of location"
+
+msgid "Descripción del lugar"
+msgstr "Location description"
+
+msgid "Continuar"
+msgstr "Continue"
+
+msgid "Paso 2: Selecciona la ubicación del evento"
+msgstr "Step 2: Select the event location"
+
+msgid "Volver"
+msgstr "Back"
+
+
+# resultado.html
+msgid "Tu recomendación personalizada"
+msgstr "Your personalized recommendation"
+
+msgid "Recomendación generada para el evento en"
+msgstr "Recommendation generated for the event at"
+
+msgid "el"
+msgstr "on"
+
+msgid "Motivo de la recomendación"
+msgstr "Reason for the recommendation"
+
+msgid "Clima estimado"
+msgstr "Estimated weather"
+
+msgid "Humedad"
+msgstr "Humidity"
+
+msgid "Solicitar otra recomendación"
+msgstr "Request another recommendation"

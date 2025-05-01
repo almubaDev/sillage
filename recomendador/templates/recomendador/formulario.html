@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="text-center py-10">
+  <h1 class="text-3xl font-bold mb-4">{% trans "Bienvenido a tu recomendador de perfumes" %}</h1>
+  <p class="text-sm text-gray-400 mb-6">{% trans "Obtén la mejor sugerencia según tu ocasión, vestimenta y contexto." %}</p>
+  <button onclick="document.getElementById('modal-recomendar').showModal()"
+          class="btn-accent px-6 py-3 rounded-full text-sm font-semibold shadow hover:scale-105 transition">
+    {% trans "Recomendar" %}
+  </button>
+</div>
+
+<!-- Modal multistep -->
+<dialog id="modal-recomendar" class="max-w-2xl w-full rounded-xl shadow-xl backdrop:bg-black/40">
+  <form method="post" class="bg-[var(--bg)] text-[var(--text)] p-6 space-y-6" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Paso 1: Datos del usuario -->
+    <div id="paso1" class="step-content space-y-4">
+      <h2 class="text-xl font-bold mb-2">{% trans "Paso 1: Detalles del evento" %}</h2>
+
+      <div>
+        <label for="{{ form.fecha_evento.id_for_label }}" class="font-semibold">{% trans "Fecha del evento" %}</label>
+        {{ form.fecha_evento }}{{ form.fecha_evento.errors }}
+      </div>
+
+      <div>
+        <label for="{{ form.hora_evento.id_for_label }}" class="font-semibold">{% trans "Hora del evento" %}</label>
+        {{ form.hora_evento }}{{ form.hora_evento.errors }}
+      </div>
+
+      <div>
+        <label for="{{ form.ocasion.id_for_label }}" class="font-semibold">{% trans "Ocasión" %}</label>
+        {{ form.ocasion }}{{ form.ocasion.errors }}
+      </div>
+
+      <div>
+        <label for="{{ form.expectativa.id_for_label }}" class="font-semibold">{% trans "Expectativa emocional" %}</label>
+        {{ form.expectativa }}{{ form.expectativa.errors }}
+      </div>
+
+      <div>
+        <label for="{{ form.vestimenta.id_for_label }}" class="font-semibold">{% trans "Vestimenta" %}</label>
+        {{ form.vestimenta }}{{ form.vestimenta.errors }}
+      </div>
+
+      <div>
+        <label for="{{ form.lugar_tipo.id_for_label }}" class="font-semibold">{% trans "Tipo de lugar" %}</label>
+        {{ form.lugar_tipo }}{{ form.lugar_tipo.errors }}
+      </div>
+
+      <div>
+        <label for="{{ form.lugar_descripcion.id_for_label }}" class="font-semibold">{% trans "Descripción del lugar" %}</label>
+        {{ form.lugar_descripcion }}{{ form.lugar_descripcion.errors }}
+      </div>
+
+      <div class="flex justify-end pt-4">
+        <button type="button" onclick="mostrarPaso(2)"
+                class="bg-[var(--accent)] text-[var(--bg)] px-4 py-2 rounded hover:brightness-110">
+          {% trans "Continuar" %}
+        </button>
+      </div>
+    </div>
+
+    <!-- Paso 2: Mapa -->
+    <div id="paso2" class="step-content space-y-4 hidden">
+      <h2 class="text-xl font-bold mb-2">{% trans "Paso 2: Selecciona la ubicación del evento" %}</h2>
+
+      <div id="map" class="w-full h-64 rounded shadow border border-[var(--accent)]"></div>
+      {{ form.latitud }}{{ form.longitud }}{{ form.lugar_nombre }}
+
+      <div class="flex justify-between pt-4">
+        <button type="button" onclick="mostrarPaso(1)" class="underline text-sm text-gray-400">
+          {% trans "Volver" %}
+        </button>
+        <button type="submit" class="bg-[var(--accent)] text-[var(--bg)] px-4 py-2 rounded hover:brightness-110">
+          {% trans "Recomendar" %}
+        </button>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+<!-- Leaflet + Geocoder -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+<!-- JS pasos + mapa -->
+<script>
+function mostrarPaso(n) {
+  document.querySelectorAll(".step-content").forEach(e => e.classList.add("hidden"));
+  const paso = document.getElementById("paso" + n);
+  if (paso) paso.classList.remove("hidden");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  mostrarPaso(1);
+
+  const map = L.map('map').setView([-33.45, -70.66], 12);
+  const marker = L.marker([-33.45, -70.66], {draggable: true}).addTo(map);
+
+  const latInput = document.getElementById("id_latitud");
+  const lonInput = document.getElementById("id_longitud");
+  const lugarInput = document.getElementById("id_lugar_nombre");
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  L.Control.geocoder().addTo(map);
+
+  marker.on('dragend', function(e) {
+    const pos = marker.getLatLng();
+    latInput.value = pos.lat.toFixed(6);
+    lonInput.value = pos.lng.toFixed(6);
+
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${pos.lat}&lon=${pos.lng}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.display_name) {
+          lugarInput.value = data.display_name;
+        }
+      });
+  });
+});
+</script>
+{% endblock %}

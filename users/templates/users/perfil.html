@@ -39,22 +39,41 @@
 
     <hr class="my-6 border-t border-[var(--accent)]/30">
 
-    <!-- Selector de idioma -->
-    <form action="{% url 'set_language' %}" method="post" class="mb-6">
-      {% csrf_token %}
-      <input type="hidden" name="next" value="{{ request.path }}">
+    <!-- Selector de idioma con banderas emoji -->
+    <div class="mb-6">
       <div class="flex items-center">
-        <label for="language" class="flex-shrink-0 font-medium mr-3">
-          <i class="fas fa-globe text-[var(--accent)] mr-2"></i>
-          {% trans "Idioma" %}
-        </label>
-        <select name="language" id="language" onchange="this.form.submit()"
-                class="flex-grow border border-[var(--accent)]/30 bg-[var(--bg)]/20 px-3 py-2 rounded-lg focus:ring-2 focus:ring-[var(--accent)]">
-          <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>Español</option>
-          <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
-        </select>
+        <i class="fas fa-globe text-[var(--accent)] mr-2"></i>
+        <span class="font-medium mr-3">{% trans "Idioma" %}</span>
+        
+        <div class="relative inline-block">
+          <!-- Switch container - más pequeño -->
+          <div class="w-16 h-8 flex items-center rounded-full p-1 duration-300 ease-in-out
+                      {% if LANGUAGE_CODE == 'en' %}bg-[#3c3b6e]{% else %}bg-[#c60b1e]{% endif %}">
+            
+            <!-- Switch toggle button -->
+            <div class="bg-white w-6 h-6 rounded-full shadow-md transform duration-300 ease-in-out flex items-center justify-center
+                       {% if LANGUAGE_CODE == 'en' %}translate-x-8{% endif %}">
+              <!-- Íconos de banderas en el círculo blanco -->
+              {% if LANGUAGE_CODE == 'en' %}
+                <span class="text-xs">🇺🇸</span>
+              {% else %}
+                <span class="text-xs">🇪🇸</span>
+              {% endif %}
+            </div>
+          </div>
+          
+          <!-- Banderas en el fondo del switch -->
+          <div class="absolute inset-0 flex justify-between items-center px-2 pointer-events-none text-xs">
+            <span class="{% if LANGUAGE_CODE == 'es' %}opacity-0{% else %}text-white{% endif %}">🇪🇸</span>
+            <span class="{% if LANGUAGE_CODE == 'en' %}opacity-0{% else %}text-white{% endif %}">🇺🇸</span>
+          </div>
+          
+          <!-- Enlaces ocultos para cambiar idioma -->
+          <a href="/es{{ request.path|slice:'3:' }}" class="absolute inset-0 w-1/2 left-0 z-10 cursor-pointer"></a>
+          <a href="/en{{ request.path|slice:'3:' }}" class="absolute inset-0 w-1/2 left-1/2 z-10 cursor-pointer"></a>
+        </div>
       </div>
-    </form>
+    </div>
 
     <!-- Botones de acción -->
     {% if usuario.suscrito %}
@@ -68,11 +87,35 @@
     {% endif %}
 
     <div class="text-center mt-6">
-      <a href="{% url 'users:logout' %}" 
-         class="px-6 py-2 rounded-lg border border-[var(--accent)]/50 hover:bg-[var(--accent)]/10 transition inline-flex items-center">
-        <i class="fas fa-sign-out-alt mr-2"></i> {% trans "Cerrar sesión" %}
-      </a>
+      <!-- Formulario para logout (POST) en lugar de enlace (GET) -->
+      <form method="post" action="{% url 'users:logout' %}" class="inline-block">
+        {% csrf_token %}
+        <button type="submit" 
+           class="px-6 py-2 rounded-lg border border-[var(--accent)]/50 hover:bg-[var(--accent)]/10 transition inline-flex items-center">
+          <i class="fas fa-sign-out-alt mr-2"></i> {% trans "Cerrar sesión" %}
+        </button>
+      </form>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Animación sutil para el switch de idioma
+    const languageSwitch = document.querySelector('.relative.inline-block');
+    
+    if (languageSwitch) {
+      languageSwitch.addEventListener('mouseenter', function() {
+        this.classList.add('scale-105');
+        this.style.transition = 'transform 0.2s ease';
+      });
+      
+      languageSwitch.addEventListener('mouseleave', function() {
+        this.classList.remove('scale-105');
+      });
+    }
+  });
+</script>
 {% endblock %}

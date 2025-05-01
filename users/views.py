@@ -11,13 +11,20 @@ from django.urls import reverse
 
 @login_required
 def perfil_view(request):
+    # Para debugging - puedes quitar estos prints cuando todo funcione correctamente
+    from django.utils import translation
+    current_language = translation.get_language()
+    print(f"Idioma actual: {current_language}")
+    print(f"LANGUAGE_CODE en request: {request.LANGUAGE_CODE if hasattr(request, 'LANGUAGE_CODE') else 'No disponible'}")
+    
     redirect_to = request.GET.get('next', request.path)
     
     if request.method == 'POST':
         if 'unsubscribe' in request.POST:
             request.user.suscrito = False
             request.user.save()
-            messages.success(request, _("You have unsubscribed successfully."))
+            # Cambiado a español (idioma base)
+            messages.success(request, _("Te has dado de baja correctamente."))
             return redirect('users:perfil')
 
     return render(request, 'users/perfil.html', {

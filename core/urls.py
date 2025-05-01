@@ -12,8 +12,8 @@ urlpatterns = [
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('usuarios/', include('users.urls', namespace='users')),
-    # path('perfumes/', include('perfumes.urls')),
-    # path('recomendador/', include('recomendador.urls')),
+    path('perfumes/', include('perfumes.urls', namespace='perfumes')),
+    path('recomendador/', include('recomendador.urls')),
     # path('', include('pwa.urls')),
     prefix_default_language=True,  # Asegura prefijo de idioma siempre presente
 )

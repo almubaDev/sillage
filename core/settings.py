@@ -23,12 +23,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'users',
-    'recomendador'
+    'recomendador',
+    'perfumes'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',  # Middleware para internacionalización en posición correcta
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -45,7 +47,9 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.i18n',  # Asegurarse de que este procesador esté presente
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -119,7 +123,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 AUTH_USER_MODEL = 'users.User'
-LOGIN_REDIRECT_URL = 'user:perfil'
+LOGIN_REDIRECT_URL = 'users:perfil'  # Corregido: era 'user:perfil'
 LOGOUT_REDIRECT_URL = 'users:login'
 LOGIN_URL = 'users:login'
 

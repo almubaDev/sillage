@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-6">{% trans "Mi colección de perfumes" %}</h2>
+
+<div class="grid grid-cols-1 gap-6">
+  {% for perfume in perfumes %}
+  <div class="bg-secondary/20 rounded-xl p-4 shadow-md relative flex gap-4 items-start">
+    {% if perfume.imagen %}
+      <img src="{{ perfume.imagen.url }}"
+           alt="{{ perfume.nombre }}"
+           class="w-24 h-24 object-contain rounded-lg border border-[var(--accent)] shadow-sm">
+    {% endif %}
+
+    <div class="flex-1 pr-6">
+      <h3 class="text-lg font-semibold leading-tight">{{ perfume.nombre }}</h3>
+      <p class="text-sm text-gray-400">{{ perfume.marca }}</p>
+      {% if perfume.perfumista %}
+        <p class="text-sm italic text-gray-500">{% trans "Perfumista" %}: {{ perfume.perfumista }}</p>
+      {% endif %}
+      <p class="text-sm">{% trans "Concentración" %}: {{ perfume.get_concentracion_display }}</p>
+    </div>
+
+    <form method="post" action="{% url 'perfumes:eliminar_perfume' perfume.pk %}"
+          class="absolute top-2 right-2">
+      {% csrf_token %}
+      <button type="submit"
+              class="text-[var(--accent)] hover:brightness-90 transition text-sm"
+              title="{% trans 'Eliminar perfume' %}">
+        <i class="fas fa-circle-xmark text-lg"></i>
+      </button>
+    </form>
+  </div>
+  {% empty %}
+  <p class="text-gray-400 col-span-full">{% trans "Aún no has registrado perfumes." %}</p>
+  {% endfor %}
+</div>
+
+<!-- Botón flotante redondo -->
+<button onclick="document.getElementById('modal-form').showModal()"
+        class="fixed bottom-20 left-4 z-50 bg-[var(--accent)] text-[var(--bg)] h-14 w-14 flex items-center justify-center rounded-full shadow-lg hover:scale-105 transition"
+        title="{% trans 'Registrar nuevo perfume' %}">
+  <i class="fas fa-plus text-xl"></i>
+</button>
+
+<!-- Modal -->
+<dialog id="modal-form" class="rounded-xl max-w-lg w-full shadow-2xl backdrop:bg-black/50">
+  <form method="post" enctype="multipart/form-data"
+        class="bg-[var(--bg)] text-[var(--text)] p-6 space-y-4 rounded-xl">
+    {% csrf_token %}
+    <h2 class="text-xl font-bold mb-2">{% trans "Registrar nuevo perfume" %}</h2>
+
+    <div>
+      <label for="{{ form.nombre.id_for_label }}">{% trans "Nombre" %}</label>
+      {{ form.nombre }}
+      {{ form.nombre.errors }}
+    </div>
+
+    <div>
+      <label for="{{ form.marca.id_for_label }}">{% trans "Marca" %}</label>
+      {{ form.marca }}
+      {{ form.marca.errors }}
+    </div>
+
+    <div>
+      <label for="{{ form.perfumista.id_for_label }}">{% trans "Perfumista (opcional)" %}</label>
+      {{ form.perfumista }}
+      {{ form.perfumista.errors }}
+    </div>
+
+    <div>
+      <label for="{{ form.concentracion.id_for_label }}">{% trans "Concentración" %}</label>
+      {{ form.concentracion }}
+      {{ form.concentracion.errors }}
+    </div>
+
+    <!-- Input de imagen con botón estilizado y preview -->
+    <div class="flex items-center gap-4">
+      <button type="button"
+              onclick="document.getElementById('id_imagen').click()"
+              class="cursor-pointer bg-[var(--accent)] text-[var(--bg)] px-4 py-2 rounded-full font-medium text-sm hover:brightness-110 transition">
+        {% trans "Seleccionar imagen" %}
+      </button>
+
+      <input type="file" name="{{ form.imagen.name }}" id="id_imagen"
+             accept="image/*" class="hidden" onchange="previewImage(this)">
+
+      <img id="preview" src="#" alt="Preview"
+           class="hidden w-14 h-14 object-contain border border-[var(--accent)] rounded">
+    </div>
+    {{ form.imagen.errors }}
+
+    <div class="flex justify-between items-center pt-4">
+      <button type="submit" class="btn-accent px-4 py-2 rounded">{% trans "Guardar" %}</button>
+      <button type="button" onclick="document.getElementById('modal-form').close()" class="underline text-sm">
+        {% trans "Cancelar" %}
+      </button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Miniatura dinámica -->
+<script>
+function previewImage(input) {
+  const preview = document.getElementById('preview');
+  const file = input.files[0];
+  if (file) {
+    preview.src = URL.createObjectURL(file);
+    preview.classList.remove('hidden');
+  } else {
+    preview.src = '#';
+    preview.classList.add('hidden');
+  }
+}
+</script>
+{% endblock %}

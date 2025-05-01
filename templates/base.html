@@ -1,119 +1,127 @@
 {% load static %}
 {% load i18n %}
+
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Sillage{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>{% block title %}Sillage{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-    <!-- FontAwesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  {% block extra_css %}{% endblock %}
 
-    {% block extra_css %}{% endblock %}
-
-    <style>
-        body.noir-chic {
-            --bg: #0B0B0B;
-            --text: #F5F5F5;
-            --accent: #D4AF37;
-            --secondary: #5C5C5C;
-        }
-        body.violeta-sensual {
-            --bg: #3B2C4D;
-            --text: #FDFDFD;
-            --accent: #C5B4E3;
-            --secondary: #F0E0EA;
-        }
-        body.minimal-light {
-            --bg: #F8F6F2;
-            --text: #2B2B2B;
-            --accent: #D6A7A1;
-            --secondary: #A79F94;
-        }
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        .btn-accent {
-            background-color: var(--accent);
-            color: var(--bg);
-        }
-        .bg-secondary {
-            background-color: var(--secondary);
-        }
-
-        input, select, option {
-            color: #000 !important;
-        }
-    </style>
+  <style>
+    body.noir-chic {
+        --bg: #0B0B0B;
+        --text: #F5F5F5;
+        --accent: #D4AF37;
+        --secondary: #5C5C5C;
+    }
+    body.violeta-sensual {
+        --bg: #3B2C4D;
+        --text: #FDFDFD;
+        --accent: #C5B4E3;
+        --secondary: #F0E0EA;
+    }
+    body.minimal-light {
+        --bg: #F8F6F2;
+        --text: #2B2B2B;
+        --accent: #D6A7A1;
+        --secondary: #A79F94;
+    }
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .btn-accent {
+        background-color: var(--accent);
+        color: var(--bg);
+    }
+    .bg-secondary {
+        background-color: var(--secondary);
+    }
+    input, select, option {
+        color: #000 !important;
+    }
+  </style>
 </head>
 
 <body class="noir-chic min-h-screen flex flex-col relative">
 
-    <!-- Botón flotante superior derecho (logo = cambiar paleta) -->
-    <div class="fixed top-3 right-3 z-50">
-        <img src="{% static 'img/logo.png' %}" alt="Logo"
-             title="{% trans 'Change theme' %}"
-             onclick="cyclePalette()"
-             class="h-10 w-10 cursor-pointer rounded-full shadow-lg hover:scale-105 transition duration-300">
+  <!-- Botón cambio de paleta (logo) -->
+  <div class="fixed top-3 right-3 z-50">
+    <img src="{% static 'img/logo.png' %}" alt="Logo"
+         onclick="cyclePalette()"
+         class="h-14 w-14 cursor-pointer rounded-full shadow-lg hover:scale-105 transition duration-300">
+  </div>
+
+  <main class="flex-grow container mx-auto px-4 pt-6 pb-24">
+    {% if messages %}
+      <div class="mb-4 space-y-2">
+        {% for message in messages %}
+          <div class="p-3 rounded {{ message.tags }} bg-blue-100 text-blue-800">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Nuevo diseño del menú (solo cambio visual) -->
+  <nav class="fixed bottom-0 inset-x-0 z-50">
+    <div class="w-full max-w-md mx-auto bg-white rounded-t-3xl shadow-lg flex items-center justify-around py-2 px-2">
+      {% with request.path as path %}
+  
+      <!-- Colección - mismo botón, nuevo estilo -->
+      <a href="{% url 'perfumes:mis_perfumes' %}"
+         class="flex flex-col items-center transition {% if '/perfumes/' in path %}text-[var(--accent)]{% else %}text-gray-500{% endif %}">
+        <i class="fas fa-spray-can-sparkles text-lg mb-1"></i>
+        <span class="text-xs">{% trans "Colección" %}</span>
+      </a>
+  
+      <!-- Recomendador - mismo botón, nuevo estilo -->
+      <a href=""
+         class="flex flex-col items-center transition {% if '/recomendador/' in path %}text-[var(--accent)]{% else %}text-gray-500{% endif %}">
+        <i class="fas fa-wand-magic-sparkles text-lg mb-1"></i>
+        <span class="text-xs">{% trans "Recomendar" %}</span>
+      </a>
+  
+      <!-- Perfil - mismo botón, nuevo estilo -->
+      <a href="{% url 'users:perfil' %}"
+         class="flex flex-col items-center transition {% if '/usuarios/perfil/' in path %}text-[var(--accent)]{% else %}text-gray-500{% endif %}">
+        <i class="fas fa-circle-user text-lg mb-1"></i>
+        <span class="text-xs">{% trans "Perfil" %}</span>
+      </a>
+  
+      {% endwith %}
     </div>
+  </nav>
 
-    <main class="flex-grow container mx-auto px-4 pt-6 pb-24">
-        {% if messages %}
-            <div class="mb-4 space-y-2">
-                {% for message in messages %}
-                    <div class="p-3 rounded {{ message.tags }} bg-blue-100 text-blue-800">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        {% block content %}{% endblock %}
-    </main>
+  <!-- Cambio de paleta -->
+  <script>
+    const palettes = ['noir-chic', 'violeta-sensual', 'minimal-light'];
+    const getCurrentPalette = () => palettes.find(p => document.body.classList.contains(p)) || palettes[0];
+    const applyPalette = (p) => {
+        palettes.forEach(c => document.body.classList.remove(c));
+        document.body.classList.add(p);
+        localStorage.setItem('palette', p);
+    };
+    const cyclePalette = () => {
+        const current = getCurrentPalette();
+        const next = palettes[(palettes.indexOf(current) + 1) % palettes.length];
+        applyPalette(next);
+    };
+    document.addEventListener('DOMContentLoaded', () => {
+        const saved = localStorage.getItem('palette') || 'noir-chic';
+        applyPalette(saved);
+    });
+  </script>
 
-    <!-- Menú inferior tipo app -->
-    <nav class="fixed bottom-0 inset-x-0 z-40 bg-secondary text-[var(--text)] shadow-inner border-t border-[var(--accent)]">
-        <div class="flex justify-around items-center h-14 text-sm">
-            <a href="" class="flex flex-col items-center hover:scale-105 transition">
-                <i class="fas fa-spray-can-sparkles text-lg"></i>
-                <span>{% trans "Collection" %}</span>
-            </a>
-            <a href="" class="flex flex-col items-center hover:scale-105 transition">
-                <i class="fas fa-magic text-lg"></i>
-                <span>{% trans "Recommend" %}</span>
-            </a>
-            <a href="{% url 'users:perfil' %}" class="flex flex-col items-center hover:scale-105 transition">
-                <i class="fas fa-user text-lg"></i>
-                <span>{% trans "Profile" %}</span>
-            </a>
-        </div>
-    </nav>
-
-    <!-- Cambio de paleta -->
-    <script>
-        const palettes = ['noir-chic', 'violeta-sensual', 'minimal-light'];
-        const getCurrentPalette = () => palettes.find(p => document.body.classList.contains(p)) || palettes[0];
-        const applyPalette = (p) => {
-            palettes.forEach(c => document.body.classList.remove(c));
-            document.body.classList.add(p);
-            localStorage.setItem('palette', p);
-        };
-        const cyclePalette = () => {
-            const current = getCurrentPalette();
-            const next = palettes[(palettes.indexOf(current) + 1) % palettes.length];
-            applyPalette(next);
-        };
-        document.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('palette') || 'noir-chic';
-            applyPalette(saved);
-        });
-    </script>
-
-    {% block extra_js %}{% endblock %}
+  {% block extra_js %}{% endblock %}
 </body>
 </html>
