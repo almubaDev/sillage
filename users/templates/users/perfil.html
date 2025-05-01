@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-[80vh]">
+  <div class="w-full max-w-md bg-white/90 p-8 rounded-2xl shadow-lg backdrop-blur-md border border-[var(--accent)]">
+
+    <h2 class="text-2xl font-bold text-center mb-6">{% trans "Mi perfil" %}</h2>
+
+    <div class="space-y-2 text-sm text-gray-800">
+      <p><strong>{% trans "Correo electrónico" %}:</strong> {{ usuario.email }}</p>
+      <p><strong>{% trans "Suscripción" %}:</strong>
+        {% if usuario.suscrito %}
+          {% trans "Activa" %}
+        {% else %}
+          {% trans "Inactiva" %}
+        {% endif %}
+      </p>
+    </div>
+
+    <hr class="my-6 border-t border-[var(--accent)]">
+
+    <!-- Selector de idioma -->
+    <form action="{% url 'set_language' %}" method="post" class="mb-4">
+      {% csrf_token %}
+      <label for="language" class="font-medium">{% trans "Idioma" %}</label>
+      <select name="language" id="language" onchange="this.form.submit()"
+              class="ml-2 border border-gray-300 px-2 py-1 rounded">
+        <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>Español</option>
+        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+      </select>
+    </form>
+
+    <!-- Botón para desuscribirse -->
+    {% if usuario.suscrito %}
+    <form method="post" class="mb-4">
+      {% csrf_token %}
+      <button type="submit" name="unsubscribe"
+              class="w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
+        {% trans "Cancelar suscripción" %}
+      </button>
+    </form>
+    {% endif %}
+
+    <!-- Logout -->
+    <div class="text-center mt-4">
+      <a href="{% url 'users:logout' %}" class="text-[var(--accent)] underline font-medium">
+        {% trans "Cerrar sesión" %}
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
