@@ -3,49 +3,74 @@
 
 {% block content %}
 <div class="flex justify-center items-center min-h-[80vh]">
-  <div class="w-full max-w-md bg-white/90 p-8 rounded-2xl shadow-lg backdrop-blur-md border border-[var(--accent)]">
-
+  <div class="w-full max-w-md p-8 rounded-2xl shadow-lg">
     <h2 class="text-2xl font-bold text-center mb-6">{% trans "Mi perfil" %}</h2>
 
-    <div class="space-y-2 text-sm text-gray-800">
-      <p><strong>{% trans "Correo electrónico" %}:</strong> {{ usuario.email }}</p>
-      <p><strong>{% trans "Suscripción" %}:</strong>
-        {% if usuario.suscrito %}
-          {% trans "Activa" %}
-        {% else %}
-          {% trans "Inactiva" %}
-        {% endif %}
-      </p>
+    <!-- Información del usuario -->
+    <div class="space-y-4 mb-6">
+      <div class="flex items-center p-3 rounded-lg bg-[var(--bg)]/30 border-l-4 border-[var(--accent)]">
+        <i class="fas fa-envelope text-[var(--accent)] w-8"></i>
+        <div>
+          <p class="text-sm opacity-70">{% trans "Correo electrónico" %}</p>
+          <p class="font-medium">{{ usuario.email }}</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center p-3 rounded-lg bg-[var(--bg)]/30 border-l-4 border-[var(--accent)]">
+        <i class="fas fa-tag text-[var(--accent)] w-8"></i>
+        <div>
+          <p class="text-sm opacity-70">{% trans "Suscripción" %}</p>
+          {% if usuario.suscrito %}
+            <p class="font-medium"><i class="fas fa-check-circle text-green-500"></i> {% trans "Activa" %}</p>
+          {% else %}
+            <p class="font-medium"><i class="fas fa-times-circle text-red-500"></i> {% trans "Inactiva" %}</p>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="flex items-center p-3 rounded-lg bg-[var(--bg)]/30 border-l-4 border-[var(--accent)]">
+        <i class="fas fa-list-check text-[var(--accent)] w-8"></i>
+        <div>
+          <p class="text-sm opacity-70">{% trans "Consultas restantes" %}</p>
+          <p class="font-medium">{{ usuario.consultas_restantes }}</p>
+        </div>
+      </div>
     </div>
 
-    <hr class="my-6 border-t border-[var(--accent)]">
+    <hr class="my-6 border-t border-[var(--accent)]/30">
 
     <!-- Selector de idioma -->
-    <form action="{% url 'set_language' %}" method="post" class="mb-4">
+    <form action="{% url 'set_language' %}" method="post" class="mb-6">
       {% csrf_token %}
-      <label for="language" class="font-medium">{% trans "Idioma" %}</label>
-      <select name="language" id="language" onchange="this.form.submit()"
-              class="ml-2 border border-gray-300 px-2 py-1 rounded">
-        <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>Español</option>
-        <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
-      </select>
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <div class="flex items-center">
+        <label for="language" class="flex-shrink-0 font-medium mr-3">
+          <i class="fas fa-globe text-[var(--accent)] mr-2"></i>
+          {% trans "Idioma" %}
+        </label>
+        <select name="language" id="language" onchange="this.form.submit()"
+                class="flex-grow border border-[var(--accent)]/30 bg-[var(--bg)]/20 px-3 py-2 rounded-lg focus:ring-2 focus:ring-[var(--accent)]">
+          <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>Español</option>
+          <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+        </select>
+      </div>
     </form>
 
-    <!-- Botón para desuscribirse -->
+    <!-- Botones de acción -->
     {% if usuario.suscrito %}
     <form method="post" class="mb-4">
       {% csrf_token %}
       <button type="submit" name="unsubscribe"
-              class="w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
-        {% trans "Cancelar suscripción" %}
+              class="w-full px-4 py-3 rounded-lg bg-red-600 text-white hover:bg-red-700 transition flex items-center justify-center">
+        <i class="fas fa-ban mr-2"></i> {% trans "Cancelar suscripción" %}
       </button>
     </form>
     {% endif %}
 
-    <!-- Logout -->
-    <div class="text-center mt-4">
-      <a href="{% url 'users:logout' %}" class="text-[var(--accent)] underline font-medium">
-        {% trans "Cerrar sesión" %}
+    <div class="text-center mt-6">
+      <a href="{% url 'users:logout' %}" 
+         class="px-6 py-2 rounded-lg border border-[var(--accent)]/50 hover:bg-[var(--accent)]/10 transition inline-flex items-center">
+        <i class="fas fa-sign-out-alt mr-2"></i> {% trans "Cerrar sesión" %}
       </a>
     </div>
   </div>

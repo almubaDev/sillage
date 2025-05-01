@@ -11,6 +11,8 @@ from django.urls import reverse
 
 @login_required
 def perfil_view(request):
+    redirect_to = request.GET.get('next', request.path)
+    
     if request.method == 'POST':
         if 'unsubscribe' in request.POST:
             request.user.suscrito = False
@@ -18,7 +20,10 @@ def perfil_view(request):
             messages.success(request, _("You have unsubscribed successfully."))
             return redirect('users:perfil')
 
-    return render(request, 'users/perfil.html', {'usuario': request.user})
+    return render(request, 'users/perfil.html', {
+        'usuario': request.user,
+        'redirect_to': redirect_to
+    })
 
 
 

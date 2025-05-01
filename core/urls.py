@@ -15,8 +15,8 @@ urlpatterns += i18n_patterns(
     # path('perfumes/', include('perfumes.urls')),
     # path('recomendador/', include('recomendador.urls')),
     # path('', include('pwa.urls')),
+    prefix_default_language=True,  # Asegura prefijo de idioma siempre presente
 )
-
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
