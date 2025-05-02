@@ -1,41 +1,52 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load markdownify %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto py-12 space-y-6 px-4">
+<div class="max-w-3xl mx-auto py-10 px-4 space-y-8 text-[var(--text)]">
 
   <h1 class="text-3xl font-bold text-center">{% trans "Tu recomendación personalizada" %}</h1>
 
-  <div class="bg-secondary/20 p-6 rounded-xl shadow space-y-4">
-    <p class="text-sm text-gray-400">
-      {% trans "Recomendación generada para el evento en" %} <strong>{{ recomendacion.lugar_nombre }}</strong>
+  <div class="bg-[var(--bg-alt)] p-6 rounded-2xl shadow space-y-6">
+
+    <div class="text-sm text-gray-400 text-center">
+      {% trans "Recomendación generada para el evento en" %}
+      <strong>{{ recomendacion.lugar_nombre }}</strong>
       {% trans "el" %} {{ recomendacion.fecha_evento }} {{ recomendacion.hora_evento }}
-    </p>
-
-    <h2 class="text-2xl font-bold text-[var(--accent)]">
-      {{ recomendacion.perfume_recomendado.nombre }} <span class="text-sm font-normal">({{ recomendacion.perfume_recomendado.marca }})</span>
-    </h2>
-
-    <p class="text-sm text-gray-300 italic">{% trans "Motivo de la recomendación" %}:</p>
-    <div class="bg-white text-black p-4 rounded shadow">
-      {{ recomendacion.explicacion }}
     </div>
 
-    <div class="pt-4 space-y-2 text-sm text-gray-400">
-      <p>🌡️ {% trans "Clima estimado" %}: {{ recomendacion.clima_descripcion }} — {{ recomendacion.temperatura }}°C / {% trans "Humedad" %}: {{ recomendacion.humedad }}%</p>
-      <p>👗 {% trans "Vestimenta" %}: {{ recomendacion.vestimenta }}</p>
-      <p>🎯 {% trans "Ocasión" %}: {{ recomendacion.ocasion }}</p>
-      <p>🧠 {% trans "Expectativa emocional" %}: {{ recomendacion.expectativa }}</p>
-      <p>🏠 {% trans "Tipo de lugar" %}: {{ recomendacion.get_lugar_tipo_display }}</p>
+    {% if recomendacion.perfume_recomendado %}
+    <div class="text-center">
+      <h2 class="text-2xl font-extrabold tracking-tight text-[var(--accent)]">
+        {{ recomendacion.perfume_recomendado.nombre }}
+      </h2>
+      <p class="text-sm opacity-70 mt-1">{{ recomendacion.perfume_recomendado.marca }}</p>
+    </div>
+    {% endif %}
+
+    <div class="grid sm:grid-cols-2 gap-4 text-sm text-gray-300">
+      <div>🌡️ <strong>{% trans "Clima estimado" %}:</strong> {{ recomendacion.clima_descripcion }}, {{ recomendacion.temperatura }}°C, {% trans "Humedad" %} {{ recomendacion.humedad }}%</div>
+      <div>👕 <strong>{% trans "Vestimenta" %}:</strong> {{ recomendacion.vestimenta }}</div>
+      <div>🎯 <strong>{% trans "Ocasión" %}:</strong> {{ recomendacion.ocasion }}</div>
+      <div>🧠 <strong>{% trans "Expectativa emocional" %}:</strong> {{ recomendacion.expectativa }}</div>
+      <div>🏠 <strong>{% trans "Tipo de lugar" %}:</strong> {{ recomendacion.get_lugar_tipo_display }}</div>
+      <div>📝 <strong>{% trans "Descripción del lugar" %}:</strong> {{ recomendacion.lugar_descripcion }}</div>
+    </div>
+
+    <div class="space-y-2">
+      <h3 class="text-base font-semibold">{% trans "Motivo de la recomendación" %}</h3>
+      <blockquote class="bg-[var(--bg-soft)] border-l-4 border-[var(--accent)] px-4 py-3 rounded-md text-sm text-gray-200 leading-relaxed whitespace-pre-line">
+        {{ recomendacion.respuesta_ia|markdownify }}
+      </blockquote>
     </div>
 
     <div class="text-center pt-6">
       <a href="{% url 'recomendador:formulario' %}"
-         class="underline text-sm text-gray-300 hover:text-[var(--accent)] transition">
+         class="underline text-sm text-gray-400 hover:text-[var(--accent)] transition">
         {% trans "Solicitar otra recomendación" %}
       </a>
     </div>
-  </div>
 
+  </div>
 </div>
 {% endblock %}

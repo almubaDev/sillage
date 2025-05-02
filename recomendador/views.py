@@ -19,7 +19,7 @@ def formulario_recomendacion(request):
             obj = form.save(commit=False)
             obj.usuario = request.user
 
-            # Obtener clima
+            # Obtener clima futuro
             clima = consultar_clima(
                 lat=obj.latitud,
                 lon=obj.longitud,
@@ -31,24 +31,31 @@ def formulario_recomendacion(request):
                 messages.error(request, "No fue posible obtener el clima para la fecha y lugar seleccionados.")
                 return redirect('recomendador:formulario')
 
+            # Guardar datos de clima
             obj.clima_descripcion = clima['descripcion']
             obj.temperatura = clima['temperatura']
             obj.humedad = clima['humedad']
 
-            # Crear prompt y obtener recomendación
+            # Generar prompt e invocar IA
             prompt = construir_prompt(obj, perfumes)
             obj.prompt = prompt
-
             respuesta = llamar_ia_gemini(prompt)
             obj.respuesta_ia = respuesta
 
-            # Por ahora: asignar primer perfume como respuesta simulada
-            perfume_sugerido = perfumes.first()
-            obj.perfume_recomendado = perfume_sugerido
-            obj.explicacion = f"IA sugiere: {perfume_sugerido.nombre} para esta ocasión."
+            # Intentar detectar perfume recomendado
+            perfume_sugerido = None
+            for perfume in perfumes:
+                if perfume.nombre.lower() in respuesta.lower():
+                    perfume_sugerido = perfume
+                    break
+
+            if perfume_sugerido:
+                obj.perfume_recomendado = perfume_sugerido
+                obj.explicacion = f"La IA recomendó {perfume_sugerido.nombre} como la mejor opción."
+            else:
+                obj.explicacion = "La IA no mencionó explícitamente un perfume conocido de tu colección."
 
             obj.save()
-
             return render(request, 'recomendador/resultado.html', {'recomendacion': obj})
     else:
         form = PerfumeRecomendacionForm()

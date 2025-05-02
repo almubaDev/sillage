@@ -22,6 +22,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    'markdownify',
+    
     'users',
     'recomendador',
     'perfumes'
@@ -128,3 +130,7 @@ LOGOUT_REDIRECT_URL = 'users:login'
 LOGIN_URL = 'users:login'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+OPENWEATHER_API_KEY = "f3df07cd491790df460045d5478882fc"
+GEMINI_API_KEY = "AIzaSyA8s0lcBuA5FI13sy1xZP2iGHhQ2AtiMtQ"

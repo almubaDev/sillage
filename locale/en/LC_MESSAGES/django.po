@@ -120,15 +120,15 @@ msgid "Cancelar"
 msgstr "Cancel"
 
 
-# formulario.html
+# Recomendador - formulario.html
 msgid "Bienvenido a tu recomendador de perfumes"
 msgstr "Welcome to your perfume recommender"
 
 msgid "Obtén la mejor sugerencia según tu ocasión, vestimenta y contexto."
 msgstr "Get the best suggestion based on your occasion, outfit, and context."
 
-msgid "Recomendar"
-msgstr "Recommend"
+#msgid "Recomendar"
+#msgstr "Recommend"
 
 msgid "Paso 1: Detalles del evento"
 msgstr "Step 1: Event details"
@@ -157,14 +157,37 @@ msgstr "Location description"
 msgid "Continuar"
 msgstr "Continue"
 
+msgid "Ej: Cena formal"
+msgstr "E.g.: Formal dinner"
+
+msgid "Ej: Impresionar a alguien"
+msgstr "E.g.: To impress someone"
+
+msgid "Ej: Blazer oscuro, vestido verde, chaqueta de cuero"
+msgstr "E.g.: Dark blazer, green dress, leather jacket"
+
+msgid "Ej: Terraza junto al mar, bastante ventilada."
+msgstr "E.g.: Terrace by the sea, quite breezy"
+
+
 msgid "Paso 2: Selecciona la ubicación del evento"
 msgstr "Step 2: Select the event location"
+
+msgid "Buscar dirección..."
+msgstr "Search address..."
+
+
+msgid "Buscar"
+msgstr "Search"
+
+msgid "No se pudo encontrar la dirección."
+msgstr "Could not find the address."
+
 
 msgid "Volver"
 msgstr "Back"
 
 
-# resultado.html
 msgid "Tu recomendación personalizada"
 msgstr "Your personalized recommendation"
 
