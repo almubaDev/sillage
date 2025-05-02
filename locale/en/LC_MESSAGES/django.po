@@ -81,43 +81,55 @@ msgid "Te has dado de baja correctamente."
 msgstr "You have unsubscribed successfully."
 
 
-# Template: perfumes/coleccion.html
 
+
+
+# Template: coleccion.html
 msgid "Mi colección de perfumes"
 msgstr "My perfume collection"
+
+msgid "Buscar perfumes para agregar"
+msgstr "Search perfumes to add"
+
+msgid "Registrar nuevo perfume manualmente"
+msgstr "Register a new perfume manually"
 
 msgid "Perfumista"
 msgstr "Perfumer"
 
-msgid "Concentración"
-msgstr "Concentration"
-
-msgid "Eliminar perfume"
-msgstr "Delete perfume"
+msgid "Acordes principales"
+msgstr "Main accords"
 
 msgid "Aún no has registrado perfumes."
 msgstr "You haven't registered any perfumes yet."
 
+# Template: busqueda.html
+msgid "Buscar perfumes"
+msgstr "Search perfumes"
+
+msgid "Buscar por nombre o marca"
+msgstr "Search by name or brand"
+
+msgid "Ya en tu colección"
+msgstr "Already in your collection"
+
+msgid "Agregar"
+msgstr "Add"
+
+msgid "No se encontraron perfumes con esa búsqueda."
+msgstr "No perfumes found for that search."
+
+# Template: nuevo.html
 msgid "Registrar nuevo perfume"
 msgstr "Register new perfume"
-
-msgid "Nombre"
-msgstr "Name"
-
-msgid "Marca"
-msgstr "Brand"
-
-msgid "Perfumista (opcional)"
-msgstr "Perfumer (optional)"
-
-msgid "Seleccionar imagen"
-msgstr "Select image"
 
 msgid "Guardar"
 msgstr "Save"
 
-msgid "Cancelar"
-msgstr "Cancel"
+
+
+
+
 
 
 # Recomendador - formulario.html

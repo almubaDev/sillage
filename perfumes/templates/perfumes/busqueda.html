@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto mt-6 px-4">
+  <h1 class="text-2xl font-bold mb-4">{% trans "Buscar perfumes" %}</h1>
+
+  <form method="get" class="mb-6 flex gap-2">
+    <input type="text" name="q" value="{{ query }}" placeholder="{% trans 'Buscar por nombre o marca' %}"
+           class="w-full border rounded px-3 py-2">
+    <button type="submit" class="bg-[var(--accent)] text-[var(--bg)] px-4 py-2 rounded">
+      <i class="fas fa-search"></i> {% trans "Buscar" %}
+    </button>
+  </form>
+
+  {% if resultados %}
+    <div class="grid gap-4">
+      {% for perfume in resultados %}
+        <div class="bg-[var(--block)] rounded-xl p-4 shadow flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-semibold">{{ perfume.nombre }}</h2>
+            <p class="text-sm text-gray-400">{{ perfume.marca }}</p>
+          </div>
+          {% if perfume.id in coleccion_ids %}
+            <span class="text-xs text-green-400">{% trans "Ya en tu colección" %}</span>
+          {% else %}
+            <form method="post" action="{% url 'perfumes:agregar_perfume' perfume.id %}">
+              {% csrf_token %}
+              <button type="submit" class="text-sm text-blue-400 hover:underline">
+                <i class="fas fa-plus-circle"></i> {% trans "Agregar" %}
+              </button>
+            </form>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% elif query %}
+    <p class="text-center text-gray-500">{% trans "No se encontraron perfumes con esa búsqueda." %}</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 # My file
 auxiliar.txt
 palet.html
-
+utils/
 # Python
 *.py[cod]
 __pycache__/

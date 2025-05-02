@@ -1,9 +1,12 @@
 from django.urls import path
-from .views import mis_perfumes, eliminar_perfume
-
+from . import views
 app_name = 'perfumes'
 
 urlpatterns = [
-    path('', mis_perfumes, name='mis_perfumes'),
-    path('eliminar/<int:pk>/', eliminar_perfume, name='eliminar_perfume'),
+    path("", views.mi_coleccion, name="mi_coleccion"),
+    path("buscar/", views.buscar_perfumes, name="buscar_perfumes"),
+    path("agregar/<int:perfume_id>/", views.agregar_a_coleccion, name="agregar_perfume"),
+    path("eliminar/<int:perfume_id>/", views.eliminar_de_coleccion, name="eliminar_perfume"),
+    path("nuevo/", views.nuevo_perfume, name="nuevo_perfume"),
+    
 ]

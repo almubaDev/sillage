@@ -3,15 +3,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import PerfumeRecomendacionForm
 from .models import Recomendacion
-from perfumes.models import Perfume
+from perfumes.models import Perfume, ColeccionUsuario
 from .utils import consultar_clima, construir_prompt, llamar_ia_gemini
 
 @login_required
 def formulario_recomendacion(request):
-    perfumes = Perfume.objects.filter(usuario=request.user)
+    perfumes = Perfume.objects.filter(id__in=ColeccionUsuario.objects.filter(usuario=request.user).values_list("perfume_id", flat=True))
+
     if not perfumes.exists():
         messages.warning(request, "Debes registrar al menos un perfume antes de solicitar una recomendación.")
-        return redirect('perfumes:mis_perfumes')
+        return redirect('perfumes:mi_coleccion')
 
     if request.method == 'POST':
         form = PerfumeRecomendacionForm(request.POST)

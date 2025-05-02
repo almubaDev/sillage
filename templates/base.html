@@ -79,7 +79,7 @@
       {% with request.path as path %}
   
       <!-- Colección - mismo botón, nuevo estilo -->
-      <a href="{% url 'perfumes:mis_perfumes' %}"
+      <a href="{% url 'perfumes:mi_coleccion' %}"
          class="flex flex-col items-center transition {% if '/perfumes/' in path %}text-[var(--accent)]{% else %}text-gray-500{% endif %}">
         <i class="fas fa-spray-can-sparkles text-lg mb-1"></i>
         <span class="text-xs">{% trans "Colección" %}</span>
