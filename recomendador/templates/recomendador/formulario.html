@@ -13,10 +13,8 @@
 
 <!-- Modal multistep -->
 <dialog id="modal-recomendar" class="relative max-w-2xl w-full rounded-xl shadow-xl backdrop:bg-black/40">
-  <form method="post" class="bg-[var(--bg)] text-[var(--text)] p-6 space-y-6" enctype="multipart/form-data" onsubmit="return validarUbicacion();">
+  <form method="post" class="bg-[var(--bg)] text-[var(--text)] p-6 space-y-6" enctype="multipart/form-data" onsubmit="return mostrarSpinner();">
     {% csrf_token %}
-
-   
 
     <!-- Paso 1: Detalles del evento -->
     <div id="paso1" class="step-content space-y-4">
@@ -105,6 +103,11 @@
       </div>
     </div>
   </form>
+
+  <!-- Indicador de carga -->
+  <div id="cargando-spinner" class="hidden absolute inset-0 bg-black/50 flex items-center justify-center z-50 rounded-xl">
+    <div class="border-4 border-[var(--accent)] border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
+  </div>
 </dialog>
 
 <!-- Google Maps -->
@@ -178,10 +181,14 @@ function mostrarPaso(n) {
   document.getElementById("paso" + n).classList.remove("hidden");
 }
 
-function validarUbicacion() {
+function mostrarSpinner() {
   const lat = document.getElementById("id_latitud").value;
   const lon = document.getElementById("id_longitud").value;
-  return lat && lon;
+  if (lat && lon) {
+    document.getElementById("cargando-spinner").classList.remove("hidden");
+    return true;
+  }
+  return false;
 }
 
 document.addEventListener("DOMContentLoaded", () => {

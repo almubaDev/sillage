@@ -4,13 +4,39 @@ from django.core.management.base import BaseCommand
 from perfumes.models import Perfume
 
 class Command(BaseCommand):
-    help = "Importa perfumes desde un CSV limpio a la base de datos"
+    help = "Importa perfumes desde un CSV limpio. Usa --reset para eliminar todos los perfumes antes."
 
     def add_arguments(self, parser):
         parser.add_argument("csv_file", type=str, help="Ruta al archivo perfumes_limpios.csv")
+        parser.add_argument("--reset", action="store_true", help="Eliminar todos los perfumes antes de importar")
+
+    def limpiar_lista(self, cadena):
+        try:
+            valor = ast.literal_eval(cadena)
+            if isinstance(valor, list):
+                return valor
+            elif isinstance(valor, str):
+                return [valor]
+            else:
+                return []
+        except Exception:
+            if "," in cadena:
+                return [x.strip() for x in cadena.split(",")]
+            return [cadena.strip()]
 
     def handle(self, *args, **options):
         ruta_csv = options["csv_file"]
+        reset = options["reset"]
+
+        if reset:
+            confirm = input("⚠️ ¿Seguro que quieres eliminar todos los perfumes existentes? (s/n): ")
+            if confirm.lower() == "s":
+                Perfume.objects.all().delete()
+                self.stdout.write(self.style.WARNING("Todos los perfumes han sido eliminados."))
+            else:
+                self.stdout.write(self.style.NOTICE("Cancelado. No se eliminó nada."))
+                return
+
         total = 0
         ya_existia = 0
 
@@ -21,14 +47,9 @@ class Command(BaseCommand):
                 nombre = fila["Perfume"].strip()
                 marca = fila["Brand"].strip()
                 perfumista = fila.get("Perfumer1", "").strip()
-                try:
-                    notas = ast.literal_eval(fila["Notas"])
-                    acordes = ast.literal_eval(fila["Acordes"])
-                except Exception as e:
-                    self.stderr.write(self.style.ERROR(f"Error al convertir notas/acordes: {e}"))
-                    continue
+                notas = self.limpiar_lista(fila.get("Notas", ""))
+                acordes = self.limpiar_lista(fila.get("Acordes", ""))
 
-                # Evitar duplicados
                 if Perfume.objects.filter(nombre=nombre, marca=marca).exists():
                     ya_existia += 1
                     continue
@@ -44,4 +65,7 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS(f"✅ {total} perfumes importados correctamente."))
         if ya_existia:
-            self.stdout.write(self.style.WARNING(f"⚠️ {ya_existia} perfumes ya existían."))
+            self.stdout.write(self.style.WARNING(f"⚠️ {ya_existia} perfumes ya existían y no se duplicaron."))
+            
+            
+# manage.py cargar_perfumes /home/almubadev/sillage/perfumes_db2.csv --reset

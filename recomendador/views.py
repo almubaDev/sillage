@@ -1,14 +1,17 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import PerfumeRecomendacionForm
-from .models import Recomendacion
+from django.contrib.auth.decorators import login_required
+from django.utils.text import slugify
 from perfumes.models import Perfume, ColeccionUsuario
+from .forms import PerfumeRecomendacionForm
 from .utils import consultar_clima, construir_prompt, llamar_ia_gemini
+
 
 @login_required
 def formulario_recomendacion(request):
-    perfumes = Perfume.objects.filter(id__in=ColeccionUsuario.objects.filter(usuario=request.user).values_list("perfume_id", flat=True))
+    perfumes = Perfume.objects.filter(
+        id__in=ColeccionUsuario.objects.filter(usuario=request.user).values_list("perfume_id", flat=True)
+    )
 
     if not perfumes.exists():
         messages.warning(request, "Debes registrar al menos un perfume antes de solicitar una recomendación.")
@@ -20,7 +23,6 @@ def formulario_recomendacion(request):
             obj = form.save(commit=False)
             obj.usuario = request.user
 
-            # Obtener clima futuro
             clima = consultar_clima(
                 lat=obj.latitud,
                 lon=obj.longitud,
@@ -32,21 +34,19 @@ def formulario_recomendacion(request):
                 messages.error(request, "No fue posible obtener el clima para la fecha y lugar seleccionados.")
                 return redirect('recomendador:formulario')
 
-            # Guardar datos de clima
             obj.clima_descripcion = clima['descripcion']
             obj.temperatura = clima['temperatura']
             obj.humedad = clima['humedad']
 
-            # Generar prompt e invocar IA
             prompt = construir_prompt(obj, perfumes)
             obj.prompt = prompt
             respuesta = llamar_ia_gemini(prompt)
             obj.respuesta_ia = respuesta
 
-            # Intentar detectar perfume recomendado
             perfume_sugerido = None
             for perfume in perfumes:
-                if perfume.nombre.lower() in respuesta.lower():
+                nombre_slug = slugify(perfume.nombre)
+                if nombre_slug in slugify(respuesta):
                     perfume_sugerido = perfume
                     break
 

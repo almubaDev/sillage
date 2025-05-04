@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load markdownify %}
+{% load slug_filters %}
 
 {% block content %}
 <div class="max-w-3xl mx-auto py-10 px-4 space-y-8 text-[var(--text)]">
@@ -18,9 +19,9 @@
     {% if recomendacion.perfume_recomendado %}
     <div class="text-center">
       <h2 class="text-2xl font-extrabold tracking-tight text-[var(--accent)]">
-        {{ recomendacion.perfume_recomendado.nombre }}
+        {{ recomendacion.perfume_recomendado.nombre|slug_to_title }}
       </h2>
-      <p class="text-sm opacity-70 mt-1">{{ recomendacion.perfume_recomendado.marca }}</p>
+      <p class="text-sm opacity-70 mt-1">{{ recomendacion.perfume_recomendado.marca|slug_to_title }}</p>
     </div>
     {% endif %}
 

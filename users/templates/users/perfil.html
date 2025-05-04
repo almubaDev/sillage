@@ -15,7 +15,7 @@
           <p class="font-medium">{{ usuario.email }}</p>
         </div>
       </div>
-      
+
       <div class="flex items-center p-3 rounded-lg bg-[var(--bg)]/30 border-l-4 border-[var(--accent)]">
         <i class="fas fa-tag text-[var(--accent)] w-8"></i>
         <div>
@@ -23,11 +23,15 @@
           {% if usuario.suscrito %}
             <p class="font-medium"><i class="fas fa-check-circle text-green-500"></i> {% trans "Activa" %}</p>
           {% else %}
-            <p class="font-medium"><i class="fas fa-times-circle text-red-500"></i> {% trans "Inactiva" %}</p>
+          <a href="#"
+             class="inline-flex items-center gap-2 px-4 py-2 mt-2 rounded-full bg-gradient-to-r from-[var(--accent)] to-pink-600 text-white font-semibold shadow hover:scale-105 transition-transform duration-200">
+            <i class="fas fa-star text-sm"></i>
+            {% trans "Suscríbete aquí para activar el recomendador" %}
+          </a>
           {% endif %}
         </div>
       </div>
-      
+
       <div class="flex items-center p-3 rounded-lg bg-[var(--bg)]/30 border-l-4 border-[var(--accent)]">
         <i class="fas fa-list-check text-[var(--accent)] w-8"></i>
         <div>
@@ -39,21 +43,16 @@
 
     <hr class="my-6 border-t border-[var(--accent)]/30">
 
-    <!-- Selector de idioma con banderas emoji -->
+    <!-- Selector de idioma -->
     <div class="mb-6">
       <div class="flex items-center">
         <i class="fas fa-globe text-[var(--accent)] mr-2"></i>
         <span class="font-medium mr-3">{% trans "Idioma" %}</span>
-        
         <div class="relative inline-block">
-          <!-- Switch container - más pequeño -->
           <div class="w-16 h-8 flex items-center rounded-full p-1 duration-300 ease-in-out
                       {% if LANGUAGE_CODE == 'en' %}bg-[#3c3b6e]{% else %}bg-[#c60b1e]{% endif %}">
-            
-            <!-- Switch toggle button -->
             <div class="bg-white w-6 h-6 rounded-full shadow-md transform duration-300 ease-in-out flex items-center justify-center
                        {% if LANGUAGE_CODE == 'en' %}translate-x-8{% endif %}">
-              <!-- Íconos de banderas en el círculo blanco -->
               {% if LANGUAGE_CODE == 'en' %}
                 <span class="text-xs">🇺🇸</span>
               {% else %}
@@ -61,37 +60,33 @@
               {% endif %}
             </div>
           </div>
-          
-          <!-- Banderas en el fondo del switch -->
           <div class="absolute inset-0 flex justify-between items-center px-2 pointer-events-none text-xs">
             <span class="{% if LANGUAGE_CODE == 'es' %}opacity-0{% else %}text-white{% endif %}">🇪🇸</span>
             <span class="{% if LANGUAGE_CODE == 'en' %}opacity-0{% else %}text-white{% endif %}">🇺🇸</span>
           </div>
-          
-          <!-- Enlaces ocultos para cambiar idioma -->
           <a href="/es{{ request.path|slice:'3:' }}" class="absolute inset-0 w-1/2 left-0 z-10 cursor-pointer"></a>
           <a href="/en{{ request.path|slice:'3:' }}" class="absolute inset-0 w-1/2 left-1/2 z-10 cursor-pointer"></a>
         </div>
       </div>
     </div>
 
-    <!-- Botones de acción -->
+    <!-- Botón cancelar suscripción -->
     {% if usuario.suscrito %}
-    <form method="post" class="mb-4">
-      {% csrf_token %}
-      <button type="submit" name="unsubscribe"
-              class="w-full px-4 py-3 rounded-lg bg-red-600 text-white hover:bg-red-700 transition flex items-center justify-center">
-        <i class="fas fa-ban mr-2"></i> {% trans "Cancelar suscripción" %}
-      </button>
-    </form>
+      <form method="post" class="mb-4">
+        {% csrf_token %}
+        <button type="submit" name="unsubscribe"
+                class="w-full px-4 py-3 rounded-lg bg-red-600 text-white hover:bg-red-700 transition flex items-center justify-center">
+          <i class="fas fa-ban mr-2"></i> {% trans "Cancelar suscripción" %}
+        </button>
+      </form>
     {% endif %}
 
+    <!-- Logout -->
     <div class="text-center mt-6">
-      <!-- Formulario para logout (POST) en lugar de enlace (GET) -->
       <form method="post" action="{% url 'users:logout' %}" class="inline-block">
         {% csrf_token %}
         <button type="submit" 
-           class="px-6 py-2 rounded-lg border border-[var(--accent)]/50 hover:bg-[var(--accent)]/10 transition inline-flex items-center">
+                class="px-6 py-2 rounded-lg border border-[var(--accent)]/50 hover:bg-[var(--accent)]/10 transition inline-flex items-center">
           <i class="fas fa-sign-out-alt mr-2"></i> {% trans "Cerrar sesión" %}
         </button>
       </form>
@@ -103,15 +98,12 @@
 {% block extra_js %}
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Animación sutil para el switch de idioma
     const languageSwitch = document.querySelector('.relative.inline-block');
-    
     if (languageSwitch) {
       languageSwitch.addEventListener('mouseenter', function() {
         this.classList.add('scale-105');
         this.style.transition = 'transform 0.2s ease';
       });
-      
       languageSwitch.addEventListener('mouseleave', function() {
         this.classList.remove('scale-105');
       });

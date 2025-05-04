@@ -1,8 +1,10 @@
 import requests
 import calendar
+import random
 from datetime import datetime,timedelta
 from django.conf import settings
 from django.utils.translation import get_language
+from django.utils.text import slugify
 
 
 # ---------------------------------------------------
@@ -45,10 +47,16 @@ def consultar_clima(lat, lon, fecha, hora):
 # 🧠 CONSTRUIR PROMPT PARA GEMINI
 # ---------------------------------------------------
 
+
 def construir_prompt(obj, perfumes_queryset):
     idioma = get_language()
 
-    # Estación del año
+    lang_intro = {
+        'es': "Responde en español.",
+        'en': "Respond in English.",
+    }.get(idioma, "Respond in English.")
+
+    # Determinar estación del año
     mes = obj.fecha_evento.month
     estaciones = {
         1: "verano", 2: "verano", 3: "otoño", 4: "otoño",
@@ -58,32 +66,51 @@ def construir_prompt(obj, perfumes_queryset):
     }
     estacion = estaciones.get(mes, "desconocida")
 
-    # Momento del día
+    # Determinar momento del día
     hora = obj.hora_evento.hour
-    if hora < 12:
-        momento_dia = "mañana"
-    elif hora < 19:
-        momento_dia = "tarde"
-    else:
-        momento_dia = "noche"
+    momento_dia = "mañana" if hora < 12 else "tarde" if hora < 19 else "noche"
 
-    # Formatear perfumes
-    perfumes_formateados = ""
-    for p in perfumes_queryset:
-        perfumes_formateados += f"- {p.nombre} ({p.marca})"
-        if p.perfumista:
-            perfumes_formateados += f", perfumista: {p.perfumista}"
-        if getattr(p, "concentracion", None):
-            perfumes_formateados += f", concentración: {p.concentracion}"
-        if p.notas:
-            perfumes_formateados += f"\n  Notas: {', '.join(p.notas)}"
-        if p.acordes:
-            perfumes_formateados += f"\n  Acordes: {', '.join(p.acordes)}"
-        perfumes_formateados += "\n\n"
+    # Mezclar perfumes aleatoriamente para evitar sesgos
+    perfumes_lista = list(perfumes_queryset)
+    random.shuffle(perfumes_lista)  # 🔁 clave para evitar el sesgo por orden
+    
+    # Crear dos grupos de perfumes para forzar análisis imparcial
+    mitad = len(perfumes_lista) // 2
+    grupo1 = perfumes_lista[:mitad]
+    grupo2 = perfumes_lista[mitad:]
 
-    # Prompt base en español (puedes agregar aquí estructura multilenguaje si lo necesitas)
-    prompt = f"""
-Eres un experto perfumista con conocimiento profundo en notas olfativas, comportamiento molecular, estaciones, climatología, emociones humanas y códigos sociales. Tu tarea es recomendar UN SOLO perfume de la colección personal del usuario que sea óptimo para su contexto ambiental, emocional y estético.
+    # Formatear grupos de perfumes
+    def formatear_grupo(grupo):
+        return "\n".join([
+            f"- {p.nombre.title()} ({p.marca.title()})"
+            + (f", perfumista: {p.perfumista}" if p.perfumista else "")
+            + (f", acordes: {', '.join(p.acordes)}" if p.acordes else "")
+            + (f", notas: {', '.join(p.notas)}" if p.notas else "")
+            for p in grupo
+        ])
+
+    perfumes_grupo1 = formatear_grupo(grupo1)
+    perfumes_grupo2 = formatear_grupo(grupo2)
+
+    prompt = f"""{lang_intro}
+
+Eres un experto perfumista con conocimiento profundo en notas olfativas, comportamiento molecular, estaciones, clima y códigos sociales. Tu tarea es recomendar UN SOLO perfume de la colección personal del usuario que sea óptimo para su contexto ambiental, emocional y estético.
+
+## PROTOCOLO DE ANÁLISIS IMPARCIAL
+**PROHIBIDO considerar:**
+- Popularidad de la marca
+- Reconocimiento de nombres comerciales
+- Precios o valor de mercado
+- Éxito de ventas histórico
+- Prestigio de marcas o perfumistas
+
+**OBLIGATORIO analizar EXCLUSIVAMENTE:**
+- Notas aromáticas específicas
+- Acordes dominantes
+- Comportamiento según temperatura y humedad
+- Compatibilidad con la ocasión
+- Interacción con la vestimenta
+- Proyección en el entorno específico
 
 ## DATOS CONTEXTUALES DEL EVENTO
 - 📍 Ubicación: {obj.lugar_nombre} ({obj.lugar_tipo})
@@ -96,39 +123,68 @@ Eres un experto perfumista con conocimiento profundo en notas olfativas, comport
 - 🎯 Ocasión: {obj.ocasion}
 - 🧠 Expectativa emocional: {obj.expectativa}
 
-## PERFUMES DISPONIBLES
+## PERFUMES DISPONIBLES - PRIMER GRUPO
+{perfumes_grupo1}
 
-Cada perfume incluye: nombre, marca, perfumista, concentración, lista de notas (sin orden) y acordes dominantes.
+## PERFUMES DISPONIBLES - SEGUNDO GRUPO
+{perfumes_grupo2}
 
-{perfumes_formateados}
+**IMPORTANTE:** Ambos grupos deben analizarse con la misma profundidad. Ignora completamente nombres de marca. Analiza solo las características aromáticas y contextuales.
 
-## FUNDAMENTOS DE SELECCIÓN
+## GUÍA EXPERTA
 
-1. Analiza el entorno (clima, estación, humedad, hora) y determina qué tipos de notas suelen adaptarse mejor (cítricas, florales, amaderadas, balsámicas, etc.)
-2. Evalúa los perfumes disponibles uno por uno. Determina cuáles contienen notas o acordes compatibles con las condiciones ambientales.
-3. Considera la concentración del perfume (Parfum, EDP, EDT) y si su intensidad es adecuada según el tipo de lugar (abierto o cerrado) y condiciones climáticas.
-4. Aplica un segundo filtro estético y emocional: estilo de vestimenta, naturaleza del evento, y expectativa emocional del usuario.
-5. Si no hay coincidencias evidentes por notas, selecciona el perfume que mejor se alinee con la dimensión emocional y social del evento.
+### 🌸 PRIMAVERA
+**Día:** Florales frescos, Acuáticos, Fougère, Chipre frescos
+Acordes: Verde, Floral (ligero), Fresco, Acuático
+**Noche:** Florales orientales, Woody florales, Ambarino suave, Gourmand ligeros
+Acordes: Floral (intenso), Amaderado, Ambarino, Dulce
+
+### ☀️ VERANO
+**Día:** Cítricos, Acuáticos, Verdes, Frescos
+Acordes: Cítrico, Marino, Verde, Fresco, Afrutado (ligero)
+**Noche:** Florales blancos, Aromatic-fougère, Chipre modernos, Orientales frescos
+Acordes: Floral blanco, Especiado (ligero), Musgo, Afrutado (tropical)
+
+### 🍂 OTOÑO
+**Día:** Chipre, Woody aromáticos, Especiados suaves, Cuero suave
+Acordes: Amaderado, Musgo, Especiado, Cuero
+**Noche:** Orientales ambarados, Cuero intenso, Especiados, Fougère intensos
+Acordes: Ambarino, Especiado (intenso), Amaderado profundo, Resinoso
+
+### ❄️ INVIERNO
+**Día:** Orientales amaderados, Balsámicos, Gourmand sutiles, Especiados cálidos
+Acordes: Amaderado, Balsámico, Especiado, Dulce
+**Noche:** Orientales intensos, Cuero profundo, Gourmand ricos, Anímales
+Acordes: Amaderado pesado, Oudy, Cuero, Tabacoso, Animalico, Especiado intenso
+
+## PROCESO DE ANÁLISIS Y RECOMENDACIÓN
+
+1. **Análisis Completo:** Evalúa TODOS los perfumes de ambos grupos considerando SOLO sus propiedades aromáticas.
+2. **Análisis Ambiental:** Calcula comportamiento molecular según temperatura, humedad y espacio.
+3. **Selección Preliminar:** Identifica de cada grupo los dos mejores candidatos por compatibilidad química.
+4. **Evaluación Final:** Compara los 4 finalistas (2 de cada grupo) basándote ÚNICAMENTE en notas y acordes.
+5. **Justificación Química:** Explica la elección basándote en datos científicos olfativos.
+6. **Aplicación:** Sugiere cantidad de atomizaciones según el comportamiento molecular. **No indiques zonas del cuerpo.**
 
 ## FORMATO DE RESPUESTA
 
-Tu respuesta debe iniciar con:
+Empieza con:  
+**Recomiendo usar: [NOMBRE DEL PERFUME]**
 
-**“Recomiendo usar: [NOMBRE DEL PERFUME]”**
+Luego estructura la respuesta con los siguientes bloques:
 
-Y debe contener, en ese orden:
+1. **Análisis Ambiental y Olfativo**  
+2. **Evaluación de Candidatos (sin mencionar marcas)**  
+   - *Finalistas del Primer Grupo por notas y acordes*
+   - *Finalistas del Segundo Grupo por notas y acordes*
+3. **Justificación Final (enfocada en química aromática)**  
+4. **Recomendación de Aplicación**
 
-1. Análisis Ambiental  
-2. Perfil del Perfume Elegido  
-3. Justificación Estética y Emocional  
-4. Recomendación de Aplicación (número de sprays, zonas del cuerpo)
+Asegúrate de NO mencionar prestigio, popularidad o marca como criterios. Enfócate EXCLUSIVAMENTE en la compatibilidad aromática con el contexto.
 """
 
-    print("📤 PROMPT ENVIADO A GEMINI:\n" + "-" * 60 + "\n" + prompt + "\n" + "-" * 60)
+    print("📤 PROMPT ENVIADO A GEMINI:\n" + "-"*60 + "\n" + prompt + "\n" + "-"*60)
     return prompt
-
-
-
 
 
 

@@ -18,7 +18,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#-----------------------
 # Template: base.html
+#-----------------------
+
 msgid "Colección"
 msgstr "Collection"
 
@@ -28,7 +31,11 @@ msgstr "Recommend"
 msgid "Perfil"
 msgstr "Profile"
 
+
+#----------------------------
 # Template: users/login.html
+#----------------------------
+
 msgid "Iniciar sesión"
 msgstr "Log in"
 
@@ -38,7 +45,10 @@ msgstr "Sign in"
 msgid "¿No tienes cuenta? <a href=\"{{ register_url }}\" class=\"text-[var(--accent)] font-medium underline\">Regístrate aquí</a>."
 msgstr "Don't have an account? <a href=\"{{ register_url }}\" class=\"text-[var(--accent)] font-medium underline\">Sign up here</a>."
 
+#-------------------------------
 # Template: users/register.html
+#-------------------------------
+
 msgid "Crear una cuenta"
 msgstr "Create an account"
 
@@ -48,7 +58,10 @@ msgstr "Register"
 msgid "¿Ya tienes cuenta? <a href=\"{{ login_url }}\" class=\"text-[var(--accent)] font-medium underline\">Inicia sesión aquí</a>."
 msgstr "Already have an account? <a href=\"{{ login_url }}\" class=\"text-[var(--accent)] font-medium underline\">Log in here</a>."
 
+#-----------------------------
 # Template: users/perfil.html
+#-----------------------------
+
 msgid "Mi perfil"
 msgstr "My profile"
 
@@ -64,6 +77,9 @@ msgstr "Active"
 msgid "Inactiva"
 msgstr "Inactive"
 
+msgid "Suscríbete aquí para activar el recomendador"
+msgstr "Subscribe here to activate the recommender"
+
 msgid "Consultas restantes"
 msgstr "Remaining queries"
 
@@ -76,15 +92,19 @@ msgstr "Unsubscribe"
 msgid "Cerrar sesión"
 msgstr "Log out"
 
+
+#-------------------------
 # Mensajes de éxito/error
+#-------------------------
+
 msgid "Te has dado de baja correctamente."
 msgstr "You have unsubscribed successfully."
 
 
-
-
-
+#--------------------------
 # Template: coleccion.html
+#--------------------------
+
 msgid "Mi colección de perfumes"
 msgstr "My perfume collection"
 
@@ -103,7 +123,10 @@ msgstr "Main accords"
 msgid "Aún no has registrado perfumes."
 msgstr "You haven't registered any perfumes yet."
 
+#-------------------------
 # Template: busqueda.html
+#-------------------------
+
 msgid "Buscar perfumes"
 msgstr "Search perfumes"
 
@@ -119,28 +142,41 @@ msgstr "Add"
 msgid "No se encontraron perfumes con esa búsqueda."
 msgstr "No perfumes found for that search."
 
+msgid "Buscar por nombre"
+msgstr "Search by name"
+
+msgid "Mostrar filtros avanzados"
+msgstr "Show advanced filters"
+
+msgid "Filtrar por marca"
+msgstr "Filter by brand"
+
+msgid "Filtrar por acorde"
+msgstr "Filter by accord"
+
+msgid "Aplicar filtros"
+msgstr "Apply filters"
+
+
+#----------------------
 # Template: nuevo.html
+#----------------------
+
 msgid "Registrar nuevo perfume"
 msgstr "Register new perfume"
 
 msgid "Guardar"
 msgstr "Save"
 
-
-
-
-
-
-
+#--------------------------------
 # Recomendador - formulario.html
+#--------------------------------
+
 msgid "Bienvenido a tu recomendador de perfumes"
 msgstr "Welcome to your perfume recommender"
 
 msgid "Obtén la mejor sugerencia según tu ocasión, vestimenta y contexto."
 msgstr "Get the best suggestion based on your occasion, outfit, and context."
-
-#msgid "Recomendar"
-#msgstr "Recommend"
 
 msgid "Paso 1: Detalles del evento"
 msgstr "Step 1: Event details"
@@ -181,13 +217,11 @@ msgstr "E.g.: Dark blazer, green dress, leather jacket"
 msgid "Ej: Terraza junto al mar, bastante ventilada."
 msgstr "E.g.: Terrace by the sea, quite breezy"
 
-
 msgid "Paso 2: Selecciona la ubicación del evento"
 msgstr "Step 2: Select the event location"
 
 msgid "Buscar dirección..."
 msgstr "Search address..."
-
 
 msgid "Buscar"
 msgstr "Search"
@@ -195,28 +229,27 @@ msgstr "Search"
 msgid "No se pudo encontrar la dirección."
 msgstr "Could not find the address."
 
-
 msgid "Volver"
 msgstr "Back"
 
+#---------------------------
+# Template: resultados.html
+#---------------------------
 
 msgid "Tu recomendación personalizada"
 msgstr "Your personalized recommendation"
 
 msgid "Recomendación generada para el evento en"
-msgstr "Recommendation generated for the event at"
-
-msgid "el"
-msgstr "on"
-
-msgid "Motivo de la recomendación"
-msgstr "Reason for the recommendation"
+msgstr "Recommendation generated for the event in"
 
 msgid "Clima estimado"
 msgstr "Estimated weather"
 
 msgid "Humedad"
 msgstr "Humidity"
+
+msgid "Motivo de la recomendación"
+msgstr "Reason for the recommendation"
 
 msgid "Solicitar otra recomendación"
 msgstr "Request another recommendation"

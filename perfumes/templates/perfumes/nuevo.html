@@ -3,6 +3,14 @@
 
 {% block content %}
 <div class="max-w-xl mx-auto mt-6 px-4">
+
+  <!-- Botón Volver a Colección -->
+  <div class="mb-4">
+    <a href="{% url 'perfumes:mi_coleccion' %}" class="text-sm text-[var(--accent)] underline">
+      ← {% trans "Volver a mi colección" %}
+    </a>
+  </div>
+
   <h1 class="text-2xl font-bold mb-4">{% trans "Registrar nuevo perfume" %}</h1>
 
   <form method="post" class="space-y-4">

@@ -1,32 +1,61 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n slug_filters %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto mt-6 px-4">
+<div class="max-w-3xl mx-auto mt-6 px-4 text-[var(--text)]">
+
+  <!-- Botón Volver a Colección -->
+  <div class="mb-4">
+    <a href="{% url 'perfumes:mi_coleccion' %}" class="text-sm text-[var(--accent)] underline">
+      ← {% trans "Volver a mi colección" %}
+    </a>
+  </div>
+
   <h1 class="text-2xl font-bold mb-4">{% trans "Buscar perfumes" %}</h1>
 
-  <form method="get" class="mb-6 flex gap-2">
-    <input type="text" name="q" value="{{ query }}" placeholder="{% trans 'Buscar por nombre o marca' %}"
-           class="w-full border rounded px-3 py-2">
-    <button type="submit" class="bg-[var(--accent)] text-[var(--bg)] px-4 py-2 rounded">
+  <!-- Formulario de búsqueda principal -->
+  <form method="get" class="mb-4 flex gap-2">
+    <input type="text" name="q" value="{{ query }}" placeholder="{% trans 'Buscar por nombre' %}"
+           class="w-full border border-[var(--accent)] rounded px-3 py-2 bg-[var(--bg-alt)] text-[var(--text)]">
+    <button type="submit" class="bg-[var(--accent)] text-[var(--bg)] px-4 py-2 rounded hover:brightness-110">
       <i class="fas fa-search"></i> {% trans "Buscar" %}
     </button>
   </form>
 
+  <!-- Filtros avanzados -->
+  <button type="button" onclick="document.getElementById('filtros').classList.toggle('hidden')"
+          class="text-sm text-[var(--accent)] mb-4 underline">
+    {% trans "Mostrar filtros avanzados" %}
+  </button>
+
+  <div id="filtros" class="hidden space-y-2 mb-6">
+    <form method="get" class="grid gap-3">
+      <input type="text" name="marca" value="{{ marca }}" placeholder="{% trans 'Filtrar por marca' %}"
+             class="w-full border border-[var(--accent)] px-3 py-1 rounded bg-[var(--bg-alt)] text-[var(--text)]">
+      <input type="text" name="acorde" value="{{ acorde }}" placeholder="{% trans 'Filtrar por acorde' %}"
+             class="w-full border border-[var(--accent)] px-3 py-1 rounded bg-[var(--bg-alt)] text-[var(--text)]">
+      <button type="submit" class="bg-[var(--accent)] text-[var(--bg)] px-3 py-2 rounded w-fit self-start">
+        {% trans "Aplicar filtros" %}
+      </button>
+    </form>
+  </div>
+
+  <!-- Resultados -->
   {% if resultados %}
     <div class="grid gap-4">
       {% for perfume in resultados %}
         <div class="bg-[var(--block)] rounded-xl p-4 shadow flex items-center justify-between">
           <div>
-            <h2 class="text-lg font-semibold">{{ perfume.nombre }}</h2>
-            <p class="text-sm text-gray-400">{{ perfume.marca }}</p>
+            <h2 class="text-lg font-semibold">{{ perfume.nombre|slug_to_title }}</h2>
+            <p class="text-sm text-[var(--text-muted)]">{{ perfume.marca|slug_to_title }}</p>
           </div>
           {% if perfume.id in coleccion_ids %}
             <span class="text-xs text-green-400">{% trans "Ya en tu colección" %}</span>
           {% else %}
             <form method="post" action="{% url 'perfumes:agregar_perfume' perfume.id %}">
               {% csrf_token %}
-              <button type="submit" class="text-sm text-blue-400 hover:underline">
+              <input type="hidden" name="next" value="{{ request.get_full_path }}">
+              <button type="submit" class="text-sm text-[var(--accent)] hover:underline">
                 <i class="fas fa-plus-circle"></i> {% trans "Agregar" %}
               </button>
             </form>
@@ -34,8 +63,10 @@
         </div>
       {% endfor %}
     </div>
-  {% elif query %}
-    <p class="text-center text-gray-500">{% trans "No se encontraron perfumes con esa búsqueda." %}</p>
+  {% elif query or marca or acorde %}
+    <p class="text-center text-[var(--text-muted)]">{% trans "No se encontraron perfumes con esa búsqueda." %}</p>
+  {% else %}
+    <p class="text-center text-[var(--text-muted)]">{% trans "Ingresa un término para buscar perfumes." %}</p>
   {% endif %}
 </div>
 {% endblock %}
