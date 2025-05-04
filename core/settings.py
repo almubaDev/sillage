@@ -4,15 +4,15 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-
 SECRET_KEY = 'django-insecure-ed$du#r93c^-pj9l(-lwpr8=(nrsc3y02&0)#3hq8^z67&=hm('
-
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '8bd4-200-104-85-14.ngrok-free.app']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://8bd4-200-104-85-14.ngrok-free.app'
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -62,7 +62,46 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-
+# Configuración de logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'administrador': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 
 DATABASES = {
@@ -137,5 +176,21 @@ LOGIN_URL = 'users:login'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+
+#--------------------------------
+# Gemini API
+#--------------------------------
 OPENWEATHER_API_KEY = "f3df07cd491790df460045d5478882fc"
 GEMINI_API_KEY = "AIzaSyA8s0lcBuA5FI13sy1xZP2iGHhQ2AtiMtQ"
+
+
+#--------------------------------
+# PayPal Settings
+#--------------------------------
+PAYPAL_CLIENT_ID = 'AeUNs0b1VVQ2RFRbzCGhDW09kXJlSr7yrdv5wxUFrnYU8TDlwvsG03wOwQ1nOA5kyhGxjwY0LGzgWM5v'
+PAYPAL_SECRET = 'EPZQpCuLaEAJSaPLZaO4DTbS0xIKXbne71H13CILncmyivPIRkjOddbRCc_9VBhErHmc9P_uvgCjNr2t' 
+PAYPAL_MODE = 'sandbox'  # Cambiar a 'live' en producción
+PAYPAL_API_BASE = 'https://api-m.sandbox.paypal.com'  # Base URL para sandbox
+
+PAYPAL_PRODUCT_ID = 'PROD-98E32171JM873864P'
+PAYPAL_PLAN_ID = 'P-22A43098X7666612YNALM7FY'

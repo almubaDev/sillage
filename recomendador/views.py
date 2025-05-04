@@ -5,7 +5,7 @@ from django.utils.text import slugify
 from perfumes.models import Perfume, ColeccionUsuario
 from .forms import PerfumeRecomendacionForm
 from .utils import consultar_clima, construir_prompt, llamar_ia_gemini
-
+import re
 
 @login_required
 def formulario_recomendacion(request):
@@ -38,17 +38,66 @@ def formulario_recomendacion(request):
             obj.temperatura = clima['temperatura']
             obj.humedad = clima['humedad']
 
-            prompt = construir_prompt(obj, perfumes)
+            prompt = construir_prompt(obj, perfumes, request.user.email)
             obj.prompt = prompt
             respuesta = llamar_ia_gemini(prompt)
             obj.respuesta_ia = respuesta
 
+            # Método mejorado para identificar el perfume recomendado
             perfume_sugerido = None
-            for perfume in perfumes:
-                nombre_slug = slugify(perfume.nombre)
-                if nombre_slug in slugify(respuesta):
-                    perfume_sugerido = perfume
-                    break
+            
+            # Buscar patrones específicos para la recomendación principal
+            # Patrones para buscar al principio de la respuesta o después de asteriscos
+            primary_patterns = [
+                r'^\s*\*\*([^*\n]+)\*\*', # Texto entre ** al inicio de la respuesta
+                r'^\s*([^\n]+)\n', # Primera línea (asumiendo que es el título)
+            ]
+            
+            for pattern in primary_patterns:
+                match = re.search(pattern, respuesta)
+                if match:
+                    nombre_candidato = match.group(1).strip()
+                    # Evitar falsos positivos (como "Recomendación para...")
+                    if not any(x in nombre_candidato.lower() for x in ["recomendación", "alternativa", "recomendado", "motivo"]):
+                        for perfume in perfumes:
+                            if slugify(perfume.nombre) in slugify(nombre_candidato):
+                                perfume_sugerido = perfume
+                                break
+                        if perfume_sugerido:
+                            break
+            
+            # Si no encontramos un perfume con los patrones principales, buscar menciones explícitas
+            if not perfume_sugerido:
+                explicit_patterns = [
+                    r'recomiendo(?:\s+usar)?:\s*([^\n\.]+)',
+                    r'perfume\s+recomendado\s+final[^\n:]*:\s*([^\n\.]+)',
+                    r'mejor\s+opción[^\n:]*:\s*([^\n\.]+)',
+                ]
+                
+                for pattern in explicit_patterns:
+                    match = re.search(pattern, respuesta, re.IGNORECASE)
+                    if match:
+                        nombre_candidato = match.group(1).strip()
+                        for perfume in perfumes:
+                            if slugify(perfume.nombre) in slugify(nombre_candidato):
+                                perfume_sugerido = perfume
+                                break
+                        if perfume_sugerido:
+                            break
+            
+            # Si todavía no tenemos un perfume, usar el método anterior como fallback
+            if not perfume_sugerido:
+                # Excluir explícitamente perfumes mencionados como "alternativa"
+                alternativa_match = re.search(r'alternativa[^:]*:\s*([^\n\.]+)', respuesta, re.IGNORECASE)
+                alternativa_nombre = alternativa_match.group(1).strip() if alternativa_match else ""
+                
+                for perfume in perfumes:
+                    nombre_slug = slugify(perfume.nombre)
+                    if nombre_slug in slugify(respuesta):
+                        # Verificar que no sea la alternativa
+                        if not alternativa_nombre or nombre_slug not in slugify(alternativa_nombre):
+                            perfume_sugerido = perfume
+                            break
 
             if perfume_sugerido:
                 obj.perfume_recomendado = perfume_sugerido

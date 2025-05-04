@@ -5,10 +5,50 @@
 <div class="text-center py-10">
   <h1 class="text-3xl font-bold mb-4">{% trans "Bienvenido a tu recomendador de perfumes" %}</h1>
   <p class="text-sm text-gray-400 mb-6">{% trans "Obtén la mejor sugerencia según tu ocasión, vestimenta y contexto." %}</p>
-  <button onclick="document.getElementById('modal-recomendar').showModal()"
-          class="btn-accent px-6 py-3 rounded-full text-sm font-semibold shadow hover:scale-105 transition">
-    {% trans "Recomendar" %}
-  </button>
+  
+  {% if user.is_authenticated and user.suscrito %}
+    <button onclick="document.getElementById('modal-recomendar').showModal()"
+            class="btn-accent px-6 py-3 rounded-full text-sm font-semibold shadow hover:scale-105 transition mb-8">
+      {% trans "Recomendar" %}
+    </button>
+  {% endif %}
+  
+  <div class="max-w-xl mx-auto mb-8 rounded-lg shadow-md" style="background: linear-gradient(to bottom, #f9e090, #e6c870, #d4af37); color: #000000;">
+    <div class="p-6">
+      <h2 class="text-xl font-semibold mb-3" style="color: #000000;">{% trans "Sillage" %}</h2>
+      <p class="mb-4 text-lg italic" style="color: #000000;">{% trans '"Vísteme bien..." tu aroma habla por ti.' %}</p>
+      
+      <h3 class="font-medium mb-3 pb-1 border-b border-black/20" style="color: #000000;">{% trans "¿Cómo funciona?" %}</h3>
+      <ul class="text-left space-y-2 mb-4">
+        <li class="flex items-start">
+          <span class="inline-block w-6 h-6 rounded-full bg-black/10 text-center mr-2 flex-shrink-0" style="color: #000000;">1</span>
+          <span style="color: #000000;">{% trans "Cuéntanos tu ocasión: Reunión, cita o evento." %}</span>
+        </li>
+        <li class="flex items-start">
+          <span class="inline-block w-6 h-6 rounded-full bg-black/10 text-center mr-2 flex-shrink-0" style="color: #000000;">2</span>
+          <span style="color: #000000;">{% trans "Describe tu estilo y cómo quieres sentirte." %}</span>
+        </li>
+        <li class="flex items-start">
+          <span class="inline-block w-6 h-6 rounded-full bg-black/10 text-center mr-2 flex-shrink-0" style="color: #000000;">3</span>
+          <span style="color: #000000;">{% trans "Indícanos lugar y hora para analizar el contexto." %}</span>
+        </li>
+        <li class="flex items-start">
+          <span class="inline-block w-6 h-6 rounded-full bg-black/10 text-center mr-2 flex-shrink-0" style="color: #000000;">4</span>
+          <span style="color: #000000;">{% trans "Elegiremos el perfume perfecto de tu colección." %}</span>
+        </li>
+      </ul>
+      
+      <p class="text-sm italic border-t border-black/20 pt-2" style="color: #000000;">{% trans "Haz que tu presencia deje huella... incluso antes de hablar." %}</p>
+    </div>
+  </div>
+  
+  {% if user.is_authenticated and not user.suscrito %}
+    <a href="{% url 'administrador:suscribirse' %}"
+       class="btn-accent px-6 py-3 rounded-full text-sm font-semibold shadow hover:scale-105 transition">
+      {% trans "Suscribirse" %}
+    </a>
+    <p class="mt-3 text-sm text-gray-400">{% trans "Suscríbete para desbloquear recomendaciones personalizadas" %}</p>
+  {% endif %}
 </div>
 
 <!-- Modal multistep -->

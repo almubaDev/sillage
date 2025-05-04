@@ -48,7 +48,7 @@ def consultar_clima(lat, lon, fecha, hora):
 # ---------------------------------------------------
 
 
-def construir_prompt(obj, perfumes_queryset):
+def construir_prompt(obj, perfumes_queryset, email_usuario=None):
     idioma = get_language()
 
     lang_intro = {
@@ -74,7 +74,7 @@ def construir_prompt(obj, perfumes_queryset):
     perfumes_lista = list(perfumes_queryset)
     random.shuffle(perfumes_lista)  # 🔁 clave para evitar el sesgo por orden
     
-    # Crear dos grupos de perfumes para forzar análisis imparcial
+    # Crear dos grupos de perfumes para análisis imparcial
     mitad = len(perfumes_lista) // 2
     grupo1 = perfumes_lista[:mitad]
     grupo2 = perfumes_lista[mitad:]
@@ -92,25 +92,20 @@ def construir_prompt(obj, perfumes_queryset):
     perfumes_grupo1 = formatear_grupo(grupo1)
     perfumes_grupo2 = formatear_grupo(grupo2)
 
+    # Instrucción para olvidar recomendaciones previas si hay email
+    olvido_instruccion = ""
+    if email_usuario:
+        olvido_instruccion = f"""
+## IMPORTANTE - OLVIDAR RECOMENDACIONES PREVIAS
+Olvida cualquier recomendación que hayas hecho anteriormente al usuario con correo {email_usuario}. 
+Analiza este caso como completamente nuevo y único, sin usar patrones o decisiones anteriores como referencia.
+"""
+
     prompt = f"""{lang_intro}
 
-Eres un experto perfumista con conocimiento profundo en notas olfativas, comportamiento molecular, estaciones, clima y códigos sociales. Tu tarea es recomendar UN SOLO perfume de la colección personal del usuario que sea óptimo para su contexto ambiental, emocional y estético.
+Eres un experto perfumista con conocimiento profundo en notas olfativas, comportamiento molecular, estaciones, clima y códigos sociales. Tu tarea es recomendar el perfume más adecuado de la colección del usuario para su contexto específico.
 
-## PROTOCOLO DE ANÁLISIS IMPARCIAL
-**PROHIBIDO considerar:**
-- Popularidad de la marca
-- Reconocimiento de nombres comerciales
-- Precios o valor de mercado
-- Éxito de ventas histórico
-- Prestigio de marcas o perfumistas
-
-**OBLIGATORIO analizar EXCLUSIVAMENTE:**
-- Notas aromáticas específicas
-- Acordes dominantes
-- Comportamiento según temperatura y humedad
-- Compatibilidad con la ocasión
-- Interacción con la vestimenta
-- Proyección en el entorno específico
+{olvido_instruccion}
 
 ## DATOS CONTEXTUALES DEL EVENTO
 - 📍 Ubicación: {obj.lugar_nombre} ({obj.lugar_tipo})
@@ -123,69 +118,49 @@ Eres un experto perfumista con conocimiento profundo en notas olfativas, comport
 - 🎯 Ocasión: {obj.ocasion}
 - 🧠 Expectativa emocional: {obj.expectativa}
 
-## PERFUMES DISPONIBLES - PRIMER GRUPO
+## PERFUMES DISPONIBLES - GRUPO A
 {perfumes_grupo1}
 
-## PERFUMES DISPONIBLES - SEGUNDO GRUPO
+## PERFUMES DISPONIBLES - GRUPO B
 {perfumes_grupo2}
 
-**IMPORTANTE:** Ambos grupos deben analizarse con la misma profundidad. Ignora completamente nombres de marca. Analiza solo las características aromáticas y contextuales.
+## PROCESO DE FILTRADO SECUENCIAL
+Sigue ESTRICTAMENTE este orden de filtrado, descartando perfumes en cada paso:
 
-## GUÍA EXPERTA
+1. POR ESTACIÓN: Filtra perfumes apropiados para {estacion}
+2. POR CLIMA: De los anteriores, filtra por compatibilidad con {obj.temperatura}°C y {obj.humedad}% de humedad
+3. POR LUGAR: De los anteriores, filtra por idoneidad para {obj.lugar_tipo} ({obj.lugar_descripcion})
+4. POR EXPECTATIVA: De los anteriores, filtra por alineación con expectativa de {obj.expectativa}
+5. POR VESTIMENTA: De los anteriores, filtra por armonía con {obj.vestimenta}
+6. POR MOMENTO: Finalmente, filtra por idoneidad para {momento_dia}
 
-### 🌸 PRIMAVERA
-**Día:** Florales frescos, Acuáticos, Fougère, Chipre frescos
-Acordes: Verde, Floral (ligero), Fresco, Acuático
-**Noche:** Florales orientales, Woody florales, Ambarino suave, Gourmand ligeros
-Acordes: Floral (intenso), Amaderado, Ambarino, Dulce
-
-### ☀️ VERANO
-**Día:** Cítricos, Acuáticos, Verdes, Frescos
-Acordes: Cítrico, Marino, Verde, Fresco, Afrutado (ligero)
-**Noche:** Florales blancos, Aromatic-fougère, Chipre modernos, Orientales frescos
-Acordes: Floral blanco, Especiado (ligero), Musgo, Afrutado (tropical)
-
-### 🍂 OTOÑO
-**Día:** Chipre, Woody aromáticos, Especiados suaves, Cuero suave
-Acordes: Amaderado, Musgo, Especiado, Cuero
-**Noche:** Orientales ambarados, Cuero intenso, Especiados, Fougère intensos
-Acordes: Ambarino, Especiado (intenso), Amaderado profundo, Resinoso
-
-### ❄️ INVIERNO
-**Día:** Orientales amaderados, Balsámicos, Gourmand sutiles, Especiados cálidos
-Acordes: Amaderado, Balsámico, Especiado, Dulce
-**Noche:** Orientales intensos, Cuero profundo, Gourmand ricos, Anímales
-Acordes: Amaderado pesado, Oudy, Cuero, Tabacoso, Animalico, Especiado intenso
-
-## PROCESO DE ANÁLISIS Y RECOMENDACIÓN
-
-1. **Análisis Completo:** Evalúa TODOS los perfumes de ambos grupos considerando SOLO sus propiedades aromáticas.
-2. **Análisis Ambiental:** Calcula comportamiento molecular según temperatura, humedad y espacio.
-3. **Selección Preliminar:** Identifica de cada grupo los dos mejores candidatos por compatibilidad química.
-4. **Evaluación Final:** Compara los 4 finalistas (2 de cada grupo) basándote ÚNICAMENTE en notas y acordes.
-5. **Justificación Química:** Explica la elección basándote en datos científicos olfativos.
-6. **Aplicación:** Sugiere cantidad de atomizaciones según el comportamiento molecular. **No indiques zonas del cuerpo.**
+## INSTRUCCIONES CRÍTICAS
+- Realiza TODO el proceso de filtrado ANTES de elegir tu recomendación final
+- Solo después de completar los 6 filtros, elige el PERFUME RECOMENDADO FINAL
+- Una vez elegido tu PERFUME RECOMENDADO FINAL, no cambies esta elección por ningún motivo
+- NO menciones la palabra "RECOMENDACIÓN" o "RECOMENDADO" al principio de tu respuesta
+- Para evitar confusiones, inicia tu respuesta SOLO con el nombre del perfume recomendado, nada más
 
 ## FORMATO DE RESPUESTA
 
-Empieza con:  
-**Recomiendo usar: [NOMBRE DEL PERFUME]**
+Tu respuesta debe seguir EXACTAMENTE esta estructura:
 
-Luego estructura la respuesta con los siguientes bloques:
+1. PRIMERA LÍNEA: El nombre del perfume recomendado (solo el nombre, sin asteriscos ni otra palabra)
+2. SEGUNDA LÍNEA: La marca del perfume recomendado 
+3. A partir de la tercera línea: Explicación clara sobre por qué este perfume es ideal (3-4 frases)
+4. Luego: Recomendación de aplicación (1 frase)
+5. Al final: "Alternativa: [NOMBRE ALTERNATIVO]" seguido de una breve explicación
 
-1. **Análisis Ambiental y Olfativo**  
-2. **Evaluación de Candidatos (sin mencionar marcas)**  
-   - *Finalistas del Primer Grupo por notas y acordes*
-   - *Finalistas del Segundo Grupo por notas y acordes*
-3. **Justificación Final (enfocada en química aromática)**  
-4. **Recomendación de Aplicación**
+EJEMPLO DE INICIO DE RESPUESTA:
+Aventus
+Creed
+Este perfume es ideal para la ocasión porque...
 
-Asegúrate de NO mencionar prestigio, popularidad o marca como criterios. Enfócate EXCLUSIVAMENTE en la compatibilidad aromática con el contexto.
+IMPORTANTE: Tu recomendación principal debe ser consistente a lo largo de todo el texto. No menciones ni defiendas otro perfume como principal.
 """
 
     print("📤 PROMPT ENVIADO A GEMINI:\n" + "-"*60 + "\n" + prompt + "\n" + "-"*60)
     return prompt
-
 
 
 # ---------------------------------------------------

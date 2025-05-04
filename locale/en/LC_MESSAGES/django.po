@@ -253,3 +253,72 @@ msgstr "Reason for the recommendation"
 
 msgid "Solicitar otra recomendación"
 msgstr "Request another recommendation"
+
+#---------------------------
+# Template: suscripcion.html
+#---------------------------
+
+msgid "Suscríbete a Sillage Premium"
+msgstr "Subscribe to Sillage Premium"
+
+msgid "Plan Mensual"
+msgstr "Monthly Plan"
+
+msgid "mes"
+msgstr "month"
+
+msgid "Renovación automática - Cancela cuando quieras"
+msgstr "Automatic renewal - Cancel anytime"
+
+msgid "Recomendaciones personalizadas ilimitadas"
+msgstr "Unlimited personalized recommendations"
+
+msgid "Análisis climático y contextual"
+msgstr "Climate and contextual analysis"
+
+msgid "Hasta 100 perfumes en tu colección"
+msgstr "Up to 100 perfumes in your collection"
+
+msgid "30 consultas mensuales"
+msgstr "30 monthly queries"
+
+msgid "Al suscribirte, aceptas nuestros términos y condiciones"
+msgstr "By subscribing, you accept our terms and conditions"
+
+msgid "Procesando suscripción..."
+msgstr "Processing subscription..."
+
+msgid "Error de conexión. Por favor, inténtalo de nuevo."
+msgstr "Connection error. Please try again."
+
+msgid "Error de PayPal. Por favor, inténtalo de nuevo más tarde."
+msgstr "PayPal error. Please try again later."
+
+#---------------------------
+# Modal de cancelación
+#---------------------------
+
+msgid "Confirmar cancelación"
+msgstr "Confirm cancellation"
+
+msgid "¿Estás seguro de que deseas cancelar tu suscripción? Perderás acceso al recomendador y otras funcionalidades premium."
+msgstr "Are you sure you want to cancel your subscription? You will lose access to the recommender and other premium features."
+
+msgid "Volver"
+msgstr "Back"
+
+msgid "Sí, cancelar"
+msgstr "Yes, cancel"
+
+#---------------------------
+# Mensajes de sistema
+#---------------------------
+
+msgid "Tu suscripción ha sido cancelada correctamente."
+msgstr "Your subscription has been successfully cancelled."
+
+msgid "No se pudo cancelar la suscripción en PayPal."
+msgstr "The subscription could not be cancelled in PayPal."
+
+msgid "No tienes una suscripción activa."
+msgstr "You don't have an active subscription."

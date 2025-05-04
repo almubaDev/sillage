@@ -7,29 +7,31 @@ from django.utils import timezone
 class Suscripcion(models.Model):
     class TipoSuscripcion(models.TextChoices):
         MENSUAL = 'mensual', _('Mensual con renovación')
-        PAQUETE_30 = 'paquete_30', _('Paquete 30 consultas')
-        PAQUETE_70 = 'paquete_70', _('Paquete 70 consultas')
 
     class OrigenPago(models.TextChoices):
         PAYPAL = 'paypal', 'PayPal'
-        STRIPE = 'stripe', 'Stripe'
         MANUAL = 'manual', 'Manual'
 
     usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    tipo = models.CharField(max_length=20, choices=TipoSuscripcion.choices)
+    tipo = models.CharField(max_length=20, choices=TipoSuscripcion.choices, default=TipoSuscripcion.MENSUAL)
     activo = models.BooleanField(default=True)
 
     fecha_inicio = models.DateTimeField(default=timezone.now)
     fecha_expiracion = models.DateTimeField(null=True, blank=True)
 
-    consultas_restantes = models.IntegerField(null=True, blank=True)
-    perfumes_maximos = models.IntegerField(null=True, blank=True)  # null = ilimitado
+    consultas_restantes = models.IntegerField(default=30)
+    perfumes_maximos = models.IntegerField(default=100)  # Valor por defecto en lugar de null
 
-    renovacion_automatica = models.BooleanField(default=False)
+    renovacion_automatica = models.BooleanField(default=True)  # Por defecto activo
 
     origen_pago = models.CharField(max_length=20, choices=OrigenPago.choices, default=OrigenPago.PAYPAL)
     referencia_pago = models.CharField(max_length=100, null=True, blank=True)
-
+    
+    # Campos para PayPal
+    paypal_subscription_id = models.CharField(max_length=100, null=True, blank=True, unique=True)
+    paypal_plan_id = models.CharField(max_length=100, null=True, blank=True)
+    ultima_actualizacion = models.DateTimeField(auto_now=True)
+    
     def __str__(self):
         return f"{self.usuario} → {self.get_tipo_display()}"
 
