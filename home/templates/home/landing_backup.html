@@ -475,11 +475,6 @@
       
       // Mostrar instrucciones según la plataforma
       if (isIOS) {
-        installButton.style.display = 'inline-flex';
-        installButton2.style.display = 'inline-flex';
-      }
-
-      if (isIOS) {
         iosInst.style.display = 'block';
         androidInst.style.display = 'none';
         desktopInst.style.display = 'none';
@@ -497,14 +492,6 @@
       let deferredPrompt;
       
       // Escuchar el evento beforeinstallprompt
-      // Fallback: mostrar botones si no se dispara el evento
-      setTimeout(() => {
-        if (!deferredPrompt) {
-          installButton.style.display = 'inline-flex';
-          installButton2.style.display = 'inline-flex';
-        }
-      }, 5000);
-
       window.addEventListener('beforeinstallprompt', (e) => {
         // Prevenir que el navegador muestre su propio prompt
         e.preventDefault();
@@ -530,7 +517,7 @@
       // Añadir event listeners a los botones de instalación
       if (installButton) {
         // Reemplazar el evento de clic original para evitar comportamientos no deseados
-        
+        installButton.onclick = null;
         
         // Añadir nuevo manejador con preventDefault
         installButton.addEventListener('click', function(e) {
@@ -543,7 +530,7 @@
       
       if (installButton2) {
         // Reemplazar el evento de clic original
-        
+        installButton2.onclick = null;
         
         // Añadir nuevo manejador con preventDefault
         installButton2.addEventListener('click', function(e) {

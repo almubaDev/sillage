@@ -12,7 +12,16 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost,8bd4-200-104-85-14.ngrok-free.app').split(',')
+#ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '0.0.0.0',
+    '.ngrok.io',  # Permite cualquier subdominio de ngrok.io
+    '.ngrok-free.app',  # Para las nuevas URLs de ngrok
+]
+
+
 
 CSRF_TRUSTED_ORIGINS = [
     f"https://{origin}" for origin in os.getenv('CSRF_TRUSTED_ORIGINS', '8bd4-200-104-85-14.ngrok-free.app').split(',')
@@ -27,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'markdownify',
+    'pwa',
     
     'users',
     'recomendador',
@@ -193,3 +203,60 @@ else:  # 'live'
 
 # Duración de la sesión (30 días en segundos)
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
+
+
+# Añadir configuración para PWA
+PWA_APP_NAME = 'Sillage'
+PWA_APP_DESCRIPTION = "Tu recomendador personal de perfumes"
+PWA_APP_THEME_COLOR = '#D4AF37'
+PWA_APP_BACKGROUND_COLOR = '#0B0B0B'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/es/recomendador/' 
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/img/icons/icon-128x128.png',
+        'sizes': '128x128'
+    },
+    {
+        'src': '/static/img/icons/icon-144x144.png',
+        'sizes': '144x144'
+    },
+    {
+        'src': '/static/img/icons/icon-152x152.png',
+        'sizes': '152x152'
+    },
+    {
+        'src': '/static/img/icons/icon-192x192.png',
+        'sizes': '192x192'
+    },
+    {
+        'src': '/static/img/icons/icon-256x256.png',
+        'sizes': '256x256'
+    },
+    {
+        'src': '/static/img/icons/icon-512x512.png',
+        'sizes': '512x512'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': '/static/img/icons/apple-icon-152x152.png',
+        'sizes': '152x152'
+    },
+    {
+        'src': '/static/img/icons/apple-icon-180x180.png',
+        'sizes': '180x180'
+    }
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': '/static/img/splash/splash-640x1136.png',
+        'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+    }
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'es-ES'
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static/js', 'serviceworker.js')

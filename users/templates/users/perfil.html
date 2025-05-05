@@ -2,6 +2,15 @@
 {% load i18n %}
 
 {% block content %}
+
+<div style="">
+  Usuario: {{ usuario.email }} | 
+  Suscrito: {{ usuario.suscrito }} |
+  Idioma: {{ LANGUAGE_CODE }}
+</div>
+
+
+
 <div class="flex justify-center items-center min-h-[80vh]">
   <div class="w-full max-w-md p-8 rounded-2xl shadow-lg">
     <h2 class="text-2xl font-bold text-center mb-6">{% trans "Mi perfil" %}</h2>
@@ -23,7 +32,7 @@
           {% if usuario.suscrito %}
             <p class="font-medium"><i class="fas fa-check-circle text-green-500"></i> {% trans "Activa" %}</p>
           {% else %}
-            <a href="{% url 'administrador:suscribirse' %}"
+            <a href=""
               class="inline-flex items-center gap-2 px-4 py-2 mt-2 rounded-full bg-gradient-to-r from-[var(--accent)] to-pink-600 text-white font-semibold shadow hover:scale-105 transition-transform duration-200">
               <i class="fas fa-star text-sm"></i>
               {% trans "Suscríbete aquí para activar el recomendador" %}
@@ -108,7 +117,7 @@
               {% trans "Volver" %}
             </button>
             
-            <form method="post" action="{% url 'administrador:cancelar_suscripcion' %}">
+            <form method="post" action="">
               {% csrf_token %}
               <button type="submit" 
                       class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition">

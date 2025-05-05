@@ -11,28 +11,32 @@ from django.urls import reverse
 
 @login_required
 def perfil_view(request):
+    # Obtener el usuario directamente de la base de datos
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+    usuario_actual = User.objects.get(pk=request.user.pk)
+    
     # Para debugging - puedes quitar estos prints cuando todo funcione correctamente
     from django.utils import translation
     current_language = translation.get_language()
     print(f"Idioma actual: {current_language}")
     print(f"LANGUAGE_CODE en request: {request.LANGUAGE_CODE if hasattr(request, 'LANGUAGE_CODE') else 'No disponible'}")
+    print(f"Estado de suscripción: {usuario_actual.suscrito}")
     
     redirect_to = request.GET.get('next', request.path)
     
     if request.method == 'POST':
         if 'unsubscribe' in request.POST:
-            request.user.suscrito = False
-            request.user.save()
+            usuario_actual.suscrito = False
+            usuario_actual.save()
             # Cambiado a español (idioma base)
             messages.success(request, _("Te has dado de baja correctamente."))
             return redirect('users:perfil')
 
     return render(request, 'users/perfil.html', {
-        'usuario': request.user,
+        'usuario': usuario_actual,
         'redirect_to': redirect_to
     })
-
-
 
 class CustomLoginView(LoginView):
     authentication_form = CustomLoginForm
