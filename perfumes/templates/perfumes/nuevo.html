@@ -13,12 +13,164 @@
 
   <h1 class="text-2xl font-bold mb-4">{% trans "Registrar nuevo perfume" %}</h1>
 
-  <form method="post" class="space-y-4">
+  <!-- Instrucciones generales -->
+  <div class="bg-[var(--block)] rounded-lg p-4 mb-6 text-sm">
+    <p class="font-semibold mb-2">{% trans "Instrucciones para completar el formulario:" %}</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>{% trans "Completa todos los campos obligatorios marcados con *" %}</li>
+      <li>{% trans "Para los campos de notas y acordes, ingresa los valores separados por comas" %}</li>
+      <li>{% trans "Ejemplo de notas: vainilla, lavanda, bergamota" %}</li>
+      <li>{% trans "Ejemplo de acordes: amaderado, cítrico, floral" %}</li>
+    </ul>
+  </div>
+
+  <!-- Formulario mejorado con mejor presentación -->
+  <form method="post" class="space-y-6" id="perfumeForm">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="bg-[var(--accent)] text-[var(--bg)] px-4 py-2 rounded hover:brightness-110">
-      {% trans "Guardar" %}
-    </button>
+    
+    <!-- Campo Nombre -->
+    <div class="form-group">
+      <label for="{{ form.nombre.id_for_label }}" class="block text-sm font-medium mb-1">
+        {{ form.nombre.label }} *
+      </label>
+      {{ form.nombre }}
+      {% if form.nombre.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ form.nombre.errors }}</p>
+      {% endif %}
+    </div>
+    
+    <!-- Campo Marca -->
+    <div class="form-group">
+      <label for="{{ form.marca.id_for_label }}" class="block text-sm font-medium mb-1">
+        {{ form.marca.label }} *
+      </label>
+      {{ form.marca }}
+      {% if form.marca.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ form.marca.errors }}</p>
+      {% endif %}
+    </div>
+    
+    <!-- Campo Notas -->
+    <div class="form-group">
+      <label for="{{ form.notas_texto.id_for_label }}" class="block text-sm font-medium mb-1">
+        {% trans "Notas" %}
+      </label>
+      <div class="relative">
+        {{ form.notas_texto }}
+        {% if not form.notas_texto %}
+          <!-- Si estamos usando el form original en lugar del que crea campos personalizados -->
+          {{ form.notas }}
+          <p class="text-xs text-[var(--accent)] mt-1">{% trans "Ingresa las notas separadas por comas. Ejemplo: vainilla, lavanda, sándalo" %}</p>
+        {% endif %}
+      </div>
+      <div id="notasError" class="text-red-500 text-xs mt-1 hidden">
+        {% trans "Por favor, ingresa las notas en formato correcto (separadas por comas)" %}
+      </div>
+      {% if form.notas.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ form.notas.errors }}</p>
+      {% endif %}
+    </div>
+    
+    <!-- Campo Acordes -->
+    <div class="form-group">
+      <label for="{{ form.acordes_texto.id_for_label }}" class="block text-sm font-medium mb-1">
+        {% trans "Acordes" %}
+      </label>
+      <div class="relative">
+        {{ form.acordes_texto }}
+        {% if not form.acordes_texto %}
+          <!-- Si estamos usando el form original en lugar del que crea campos personalizados -->
+          {{ form.acordes }}
+          <p class="text-xs text-[var(--accent)] mt-1">{% trans "Ingresa los acordes separados por comas. Ejemplo: amaderado, cítrico, floral" %}</p>
+        {% endif %}
+      </div>
+      <div id="acordesError" class="text-red-500 text-xs mt-1 hidden">
+        {% trans "Por favor, ingresa los acordes en formato correcto (separados por comas)" %}
+      </div>
+      {% if form.acordes.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ form.acordes.errors }}</p>
+      {% endif %}
+    </div>
+    
+    <!-- Campo Perfumista -->
+    <div class="form-group">
+      <label for="{{ form.perfumista.id_for_label }}" class="block text-sm font-medium mb-1">
+        {{ form.perfumista.label }}
+      </label>
+      {{ form.perfumista }}
+      {% if form.perfumista.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ form.perfumista.errors }}</p>
+      {% endif %}
+    </div>
+    
+    <!-- Botones de acción -->
+    <div class="flex justify-between items-center pt-4">
+      <a href="{% url 'perfumes:mi_coleccion' %}" class="text-[var(--text-muted)] hover:text-[var(--text)] text-sm">
+        {% trans "Cancelar" %}
+      </a>
+      <button type="submit" class="bg-[var(--accent)] text-[var(--bg)] px-6 py-2 rounded hover:brightness-110 transition-all">
+        {% trans "Guardar" %}
+      </button>
+    </div>
   </form>
 </div>
+
+<!-- Script para validación adicional -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('perfumeForm');
+    
+    form.addEventListener('submit', function(e) {
+      let valid = true;
+      
+      // Validar campo de notas
+      const notasField = document.getElementById('{{ form.notas.id_for_label }}') || 
+                        document.getElementById('{{ form.notas_texto.id_for_label }}');
+      
+      if (notasField && notasField.value.trim() === 'null') {
+        document.getElementById('notasError').classList.remove('hidden');
+        notasField.classList.add('border-red-500');
+        notasField.value = '';
+        valid = false;
+      } else if (notasField) {
+        document.getElementById('notasError').classList.add('hidden');
+        notasField.classList.remove('border-red-500');
+      }
+      
+      // Validar campo de acordes
+      const acordesField = document.getElementById('{{ form.acordes.id_for_label }}') || 
+                          document.getElementById('{{ form.acordes_texto.id_for_label }}');
+      
+      if (acordesField && acordesField.value.trim() === 'null') {
+        document.getElementById('acordesError').classList.remove('hidden');
+        acordesField.classList.add('border-red-500');
+        acordesField.value = '';
+        valid = false;
+      } else if (acordesField) {
+        document.getElementById('acordesError').classList.add('hidden');
+        acordesField.classList.remove('border-red-500');
+      }
+      
+      // Detener envío si hay errores
+      if (!valid) {
+        e.preventDefault();
+      }
+    });
+    
+    // Eliminar 'null' al enfocar los campos
+    const clearNullOnFocus = function(e) {
+      if (this.value.trim() === 'null') {
+        this.value = '';
+      }
+    };
+    
+    const notasField = document.getElementById('{{ form.notas.id_for_label }}') || 
+                     document.getElementById('{{ form.notas_texto.id_for_label }}');
+    const acordesField = document.getElementById('{{ form.acordes.id_for_label }}') || 
+                       document.getElementById('{{ form.acordes_texto.id_for_label }}');
+    
+    if (notasField) notasField.addEventListener('focus', clearNullOnFocus);
+    if (acordesField) acordesField.addEventListener('focus', clearNullOnFocus);
+  });
+</script>
 {% endblock %}

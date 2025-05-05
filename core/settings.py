@@ -1,17 +1,21 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
+# Cargar variables de entorno
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-ed$du#r93c^-pj9l(-lwpr8=(nrsc3y02&0)#3hq8^z67&=hm('
+# Usar variables de entorno con valores por defecto solo para configuraciones no sensibles
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '8bd4-200-104-85-14.ngrok-free.app']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost,8bd4-200-104-85-14.ngrok-free.app').split(',')
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://8bd4-200-104-85-14.ngrok-free.app'
+    f"https://{origin}" for origin in os.getenv('CSRF_TRUSTED_ORIGINS', '8bd4-200-104-85-14.ngrok-free.app').split(',')
 ]
 
 INSTALLED_APPS = [
@@ -28,6 +32,7 @@ INSTALLED_APPS = [
     'recomendador',
     'perfumes',
     'administrador',
+    'home',
 ]
 
 MIDDLEWARE = [
@@ -103,19 +108,17 @@ LOGGING = {
     },
 }
 
-
+# Base de datos
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sillage_db',
-        'USER': 'sillage_user',
-        'PASSWORD': 'sillage_pass',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
-
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -132,19 +135,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-
-
-
-
+# Zona horaria e internacionalización
 TIME_ZONE = 'America/Santiago'
-
-USE_I18N = True
-
 USE_TZ = True
 
 LANGUAGE_CODE = 'es'
-
 LANGUAGES = [
     ('es', 'Español'),
     ('en', 'English'),
@@ -152,14 +147,12 @@ LANGUAGES = [
 
 USE_I18N = True
 USE_L10N = True
-USE_TZ = True
 
 LOCALE_PATHS = [
     BASE_DIR / 'locale',
 ]
 
-
-
+# Archivos estáticos y media
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -167,30 +160,36 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-
+# Autenticación
 AUTH_USER_MODEL = 'users.User'
-LOGIN_REDIRECT_URL = 'users:perfil'  # Corregido: era 'user:perfil'
+LOGIN_REDIRECT_URL = 'users:perfil'
 LOGOUT_REDIRECT_URL = 'users:login'
 LOGIN_URL = 'users:login'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# APIs externas - SIN valores por defecto para credenciales sensibles
+OPENWEATHER_API_KEY = os.getenv('OPENWEATHER_API_KEY')
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+GOOGLE_MAPS_API_KEY = os.getenv('GOOGLE_MAPS_API_KEY')
 
+# Configuración de PayPal
+PAYPAL_MODE = os.getenv('PAYPAL_MODE', 'sandbox')
 
-#--------------------------------
-# Gemini API
-#--------------------------------
-OPENWEATHER_API_KEY = "f3df07cd491790df460045d5478882fc"
-GEMINI_API_KEY = "AIzaSyA8s0lcBuA5FI13sy1xZP2iGHhQ2AtiMtQ"
+if PAYPAL_MODE == 'sandbox':
+    PAYPAL_CLIENT_ID = os.getenv('PAYPAL_SANDBOX_CLIENT_ID')
+    PAYPAL_SECRET = os.getenv('PAYPAL_SANDBOX_SECRET')
+    PAYPAL_API_BASE = 'https://api-m.sandbox.paypal.com'
+    PAYPAL_WEBHOOK_ID = os.getenv('PAYPAL_SANDBOX_WEBHOOK_ID')
+    PAYPAL_PRODUCT_ID = os.getenv('PAYPAL_SANDBOX_PRODUCT_ID')
+    PAYPAL_PLAN_ID = os.getenv('PAYPAL_SANDBOX_PLAN_ID')
+else:  # 'live'
+    PAYPAL_CLIENT_ID = os.getenv('PAYPAL_LIVE_CLIENT_ID')
+    PAYPAL_SECRET = os.getenv('PAYPAL_LIVE_SECRET')
+    PAYPAL_API_BASE = 'https://api-m.paypal.com'
+    PAYPAL_WEBHOOK_ID = os.getenv('PAYPAL_LIVE_WEBHOOK_ID')
+    PAYPAL_PRODUCT_ID = os.getenv('PAYPAL_LIVE_PRODUCT_ID')
+    PAYPAL_PLAN_ID = os.getenv('PAYPAL_LIVE_PLAN_ID')
 
-
-#--------------------------------
-# PayPal Settings
-#--------------------------------
-PAYPAL_CLIENT_ID = 'AeUNs0b1VVQ2RFRbzCGhDW09kXJlSr7yrdv5wxUFrnYU8TDlwvsG03wOwQ1nOA5kyhGxjwY0LGzgWM5v'
-PAYPAL_SECRET = 'EPZQpCuLaEAJSaPLZaO4DTbS0xIKXbne71H13CILncmyivPIRkjOddbRCc_9VBhErHmc9P_uvgCjNr2t' 
-PAYPAL_MODE = 'sandbox'  # Cambiar a 'live' en producción
-PAYPAL_API_BASE = 'https://api-m.sandbox.paypal.com'  # Base URL para sandbox
-
-PAYPAL_PRODUCT_ID = 'PROD-98E32171JM873864P'
-PAYPAL_PLAN_ID = 'P-22A43098X7666612YNALM7FY'
+# Duración de la sesión (30 días en segundos)
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30

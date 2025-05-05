@@ -9,6 +9,11 @@ import re
 
 @login_required
 def formulario_recomendacion(request):
+    # Verificar si el usuario tiene consultas restantes
+    if request.user.consultas_restantes <= 0:
+        messages.error(request, "No tienes consultas disponibles. Por favor renueva tu suscripción.")
+        return redirect('users:perfil')
+        
     perfumes = Perfume.objects.filter(
         id__in=ColeccionUsuario.objects.filter(usuario=request.user).values_list("perfume_id", flat=True)
     )
@@ -46,7 +51,6 @@ def formulario_recomendacion(request):
             # Método mejorado para identificar el perfume recomendado
             perfume_sugerido = None
             
-            # Buscar patrones específicos para la recomendación principal
             # Patrones para buscar al principio de la respuesta o después de asteriscos
             primary_patterns = [
                 r'^\s*\*\*([^*\n]+)\*\*', # Texto entre ** al inicio de la respuesta
@@ -106,6 +110,11 @@ def formulario_recomendacion(request):
                 obj.explicacion = "La IA no mencionó explícitamente un perfume conocido de tu colección."
 
             obj.save()
+            
+            # Decrementar el contador de consultas restantes
+            request.user.consultas_restantes -= 1
+            request.user.save()
+            
             return render(request, 'recomendador/resultado.html', {'recomendacion': obj})
     else:
         form = PerfumeRecomendacionForm()

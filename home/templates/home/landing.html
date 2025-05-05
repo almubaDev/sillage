@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-12 text-center">
+  <!-- Hero section -->
+  <div class="mb-12">
+    <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Sillage</h1>
+    <p class="text-xl text-gray-600 italic mb-6">“Vísteme bien... hasta el aroma.”</p>
+    <p class="text-md text-gray-700 mb-8">Tu esencia también habla por ti. Descubre el perfume perfecto según el lugar, clima, ocasión y cómo quieres sentirte.</p>
+    <button id="installButton" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg text-lg shadow-md transition duration-200">
+      Instalar App
+    </button>
+  </div>
+
+  <!-- Pasos explicativos -->
+  <div class="grid md:grid-cols-3 gap-8 text-left">
+    <div>
+      <h3 class="text-xl font-semibold mb-2">1. Cuéntanos la ocasión</h3>
+      <p class="text-gray-600">Trabajo, cita, paseo... tú decides dónde y cuándo.</p>
+    </div>
+    <div>
+      <h3 class="text-xl font-semibold mb-2">2. Describe tu estilo</h3>
+      <p class="text-gray-600">Tu vestimenta, tu energía, tu expectativa emocional.</p>
+    </div>
+    <div>
+      <h3 class="text-xl font-semibold mb-2">3. Nosotros elegimos</h3>
+      <p class="text-gray-600">Sillage recomienda el mejor perfume de tu colección.</p>
+    </div>
+  </div>
+</div>
+
+<!-- JS para instalación de PWA -->
+<script>
+  let deferredPrompt;
+  const installBtn = document.getElementById('installButton');
+  installBtn.style.display = 'none';
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'inline-block';
+  });
+
+  installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        console.log('PWA installed');
+      }
+      deferredPrompt = null;
+    }
+  });
+</script>
+{% endblock %}

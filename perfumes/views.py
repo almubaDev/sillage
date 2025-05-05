@@ -84,8 +84,16 @@ def nuevo_perfume(request):
     if request.method == "POST":
         form = PerfumeForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, "Perfume agregado correctamente.")
+            # Guardar el perfume en la base de datos
+            perfume = form.save()
+            
+            # Agregar automáticamente a la colección del usuario
+            ColeccionUsuario.objects.create(
+                usuario=request.user,
+                perfume=perfume
+            )
+            
+            messages.success(request, "Perfume agregado correctamente a tu colección.")
             return redirect("perfumes:mi_coleccion")
     else:
         form = PerfumeForm()
