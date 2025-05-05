@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'markdownify',
-    'pwa',
     
     'users',
     'recomendador',
@@ -201,62 +200,3 @@ else:  # 'live'
     PAYPAL_PRODUCT_ID = os.getenv('PAYPAL_LIVE_PRODUCT_ID')
     PAYPAL_PLAN_ID = os.getenv('PAYPAL_LIVE_PLAN_ID')
 
-# Duración de la sesión (30 días en segundos)
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
-
-
-# Añadir configuración para PWA
-PWA_APP_NAME = 'Sillage'
-PWA_APP_DESCRIPTION = "Tu recomendador personal de perfumes"
-PWA_APP_THEME_COLOR = '#D4AF37'
-PWA_APP_BACKGROUND_COLOR = '#0B0B0B'
-PWA_APP_DISPLAY = 'standalone'
-PWA_APP_SCOPE = '/'
-PWA_APP_ORIENTATION = 'any'
-PWA_APP_START_URL = '/es/recomendador/' 
-PWA_APP_STATUS_BAR_COLOR = 'default'
-PWA_APP_ICONS = [
-    {
-        'src': '/static/img/icons/icon-128x128.png',
-        'sizes': '128x128'
-    },
-    {
-        'src': '/static/img/icons/icon-144x144.png',
-        'sizes': '144x144'
-    },
-    {
-        'src': '/static/img/icons/icon-152x152.png',
-        'sizes': '152x152'
-    },
-    {
-        'src': '/static/img/icons/icon-192x192.png',
-        'sizes': '192x192'
-    },
-    {
-        'src': '/static/img/icons/icon-256x256.png',
-        'sizes': '256x256'
-    },
-    {
-        'src': '/static/img/icons/icon-512x512.png',
-        'sizes': '512x512'
-    }
-]
-PWA_APP_ICONS_APPLE = [
-    {
-        'src': '/static/img/icons/apple-icon-152x152.png',
-        'sizes': '152x152'
-    },
-    {
-        'src': '/static/img/icons/apple-icon-180x180.png',
-        'sizes': '180x180'
-    }
-]
-PWA_APP_SPLASH_SCREEN = [
-    {
-        'src': '/static/img/splash/splash-640x1136.png',
-        'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
-    }
-]
-PWA_APP_DIR = 'ltr'
-PWA_APP_LANG = 'es-ES'
-PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static/js', 'serviceworker.js')

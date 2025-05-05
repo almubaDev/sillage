@@ -1,6 +1,6 @@
 {% load static %}
 {% load i18n %}
-{% load pwa %}
+
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
@@ -8,9 +8,7 @@
   <meta charset="UTF-8">
   <title>{% block title %}Sillage{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  {% progressive_web_app_meta %}
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYW7kK_nRl4IHm8P5_MPqPDVPbMl7J-n0&libraries=places&language=es" async defer></script>
-
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 

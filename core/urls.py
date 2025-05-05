@@ -7,7 +7,6 @@ from django.utils.translation import gettext_lazy as _
 
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),  # para cambiar el idioma desde la app
-    path('', include('pwa.urls')),  # Añade esta línea para PWA
 ]
 
 urlpatterns += i18n_patterns(

@@ -1,6 +1,6 @@
 {% load static %}
 {% load i18n %}
-{% load pwa %}
+
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:'es' }}">
@@ -8,9 +8,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sillage | {% trans "Tu recomendador personal de perfumes" %}</title>
-  
-  <!-- PWA Meta Tags -->
-  {% progressive_web_app_meta %}
   
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="{% static 'img/icons/icon-128x128.png' %}">
@@ -101,116 +98,16 @@
     .delay-200 { animation-delay: 0.2s; }
     .delay-300 { animation-delay: 0.3s; }
     .delay-400 { animation-delay: 0.4s; }
-    
-    /* Modal personalizado para instrucciones de instalación */
-    #installInstructions {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.8);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .install-popup {
-      background-color: #111;
-      border: 2px solid #D4AF37;
-      border-radius: 12px;
-      max-width: 85%;
-      width: 320px;
-      padding: 20px;
-      position: relative;
-      box-shadow: 0 4px 30px rgba(212, 175, 55, 0.3);
-    }
-    
-    .install-popup h3 {
-      color: #D4AF37;
-      margin-top: 0;
-      margin-bottom: 15px;
-      text-align: center;
-      font-family: 'Playfair Display', serif;
-    }
-    
-    .install-step {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 15px;
-    }
-    
-    .step-number {
-      background-color: #D4AF37;
-      color: #111;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 12px;
-      font-weight: bold;
-      flex-shrink: 0;
-    }
-    
-    .install-button {
-      display: block;
-      width: 100%;
-      background-color: #D4AF37;
-      color: #111;
-      border: none;
-      padding: 10px;
-      border-radius: 30px;
-      margin-top: 20px;
-      font-weight: bold;
-      cursor: pointer;
-      text-align: center;
-      font-family: 'Poppins', sans-serif;
-      transition: filter 0.2s;
-    }
-    
-    .install-button:hover {
-      filter: brightness(110%);
-    }
-    
-    .close-button {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: none;
-      border: none;
-      color: #FFF;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    /* Animación para el modal */
-    @keyframes modalFadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-    
-    .modal-active {
-      animation: modalFadeIn 0.3s ease forwards;
-    }
   </style>
 </head>
 
 <body>
   <!-- Hero Section -->
   <header class="min-h-screen flex flex-col items-center justify-center px-6 py-12 relative">
-    <!-- Fondo con efecto parallax -->
+    <!-- Fondo con gradiente simple en lugar de imagen -->
     <div class="absolute inset-0 z-0 opacity-20">
       <div class="absolute inset-0 bg-gradient-to-b from-black to-transparent"></div>
-      <div class="w-full h-full bg-[url('{% static 'img/perfume-bg.jpg' %}')]" style="background-size: cover; background-position: center;"></div>
+      <div class="w-full h-full bg-gradient-to-br from-gray-900 to-black"></div>
     </div>
     
     <!-- Contenido del Hero -->
@@ -226,14 +123,9 @@
       
       <!-- Botones de acción -->
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <button id="installButton" class="btn-gold px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2">
-          <i class="fas fa-download"></i>
-          {% trans "Instalar App" %}
-        </button>
-        
-        <a href="{% url 'recomendador:formulario' %}" class="btn-outline px-8 py-4 rounded-full text-lg font-semibold transition flex items-center justify-center gap-2">
+        <a href="{% url 'recomendador:formulario' %}" class="btn-gold px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2">
           <i class="fas fa-arrow-right"></i>
-          {% trans "Continuar en navegador" %}
+          {% trans "Comenzar ahora" %}
         </a>
       </div>
     </div>
@@ -335,15 +227,10 @@
         {% trans "Deja que tu perfume hable por ti" %}
       </h2>
       <p class="text-xl mb-12 text-gray-300">
-        {% trans "Descarga Sillage ahora y nunca más dudes sobre qué perfume usar en cada ocasión." %}
+        {% trans "Únete a Sillage ahora y nunca más dudes sobre qué perfume usar en cada ocasión." %}
       </p>
       
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <button id="installButton2" class="btn-gold px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2">
-          <i class="fas fa-download"></i>
-          {% trans "Instalar App" %}
-        </button>
-        
         <a href="{% url 'users:login' %}" class="btn-outline px-8 py-4 rounded-full text-lg font-semibold transition flex items-center justify-center gap-2">
           <i class="fas fa-sign-in-alt"></i>
           {% trans "Iniciar Sesión" %}
@@ -375,76 +262,13 @@
       </div>
     </div>
   </footer>
-  
-  <!-- Modal personalizado de instrucciones de instalación -->
-  <div id="installInstructions">
-    <div class="install-popup modal-active">
-      <button id="closeInstall" class="close-button">&times;</button>
-      
-      <h3 class="text-lg font-bold">{% trans "Instala Sillage" %}</h3>
-      
-      <!-- Instrucciones para iOS -->
-      <div id="iosInst">
-        <div class="install-step">
-          <div class="step-number">1</div>
-          <div>{% trans "Toca el botón" %} <i class="fas fa-share-alt text-yellow-500"></i> {% trans "en la barra inferior" %}</div>
-        </div>
-        
-        <div class="install-step">
-          <div class="step-number">2</div>
-          <div>{% trans "Selecciona" %} <b>{% trans "Añadir a Pantalla de inicio" %}</b></div>
-        </div>
-        
-        <div class="install-step">
-          <div class="step-number">3</div>
-          <div>{% trans "Toca" %} <b>{% trans "Añadir" %}</b> {% trans "en la esquina superior derecha" %}</div>
-        </div>
-      </div>
-      
-      <!-- Instrucciones para Android -->
-      <div id="androidInst" style="display: none;">
-        <div class="install-step">
-          <div class="step-number">1</div>
-          <div>{% trans "Toca el menú" %} <i class="fas fa-ellipsis-v text-yellow-500"></i> {% trans "de tu navegador" %}</div>
-        </div>
-        
-        <div class="install-step">
-          <div class="step-number">2</div>
-          <div>{% trans "Selecciona" %} <b>{% trans "Instalar aplicación" %}</b> {% trans "o" %} <b>{% trans "Añadir a pantalla de inicio" %}</b></div>
-        </div>
-        
-        <div class="install-step">
-          <div class="step-number">3</div>
-          <div>{% trans "Confirma la instalación" %}</div>
-        </div>
-      </div>
-      
-      <!-- Instrucciones para escritorio -->
-      <div id="desktopInst" style="display: none;">
-        <div class="install-step">
-          <div class="step-number">1</div>
-          <div>{% trans "Haz clic en el icono" %} <i class="fas fa-plus-circle text-yellow-500"></i> {% trans "en la barra de direcciones" %}</div>
-        </div>
-        
-        <div class="install-step">
-          <div class="step-number">2</div>
-          <div>{% trans "Selecciona" %} <b>{% trans "Instalar" %}</b> {% trans "en el diálogo que aparece" %}</div>
-        </div>
-      </div>
-      
-      <button id="installNowBtn" class="install-button">{% trans "Instalar ahora" %}</button>
-    </div>
-  </div>
-  
-  <!-- Scripts -->
+
+  <!-- Simple script para animaciones -->
   <script>
-    // Animaciones al hacer scroll
     document.addEventListener('DOMContentLoaded', () => {
+      // Animaciones al hacer scroll
       const animatedElements = document.querySelectorAll('.animate-fadeInUp');
-      
-      const observerOptions = {
-        threshold: 0.1
-      };
+      const observerOptions = { threshold: 0.1 };
       
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -456,153 +280,6 @@
       
       animatedElements.forEach(el => {
         observer.observe(el);
-      });
-      
-      // Detectar plataforma
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      const isAndroid = /Android/.test(navigator.userAgent);
-      const isDesktop = !isIOS && !isAndroid && window.innerWidth > 768;
-      
-      // Seleccionar elementos
-      const installModal = document.getElementById('installInstructions');
-      const closeBtn = document.getElementById('closeInstall');
-      const installButton = document.getElementById('installButton');
-      const installButton2 = document.getElementById('installButton2');
-      const installNowBtn = document.getElementById('installNowBtn');
-      const iosInst = document.getElementById('iosInst');
-      const androidInst = document.getElementById('androidInst');
-      const desktopInst = document.getElementById('desktopInst');
-      
-      // Mostrar instrucciones según la plataforma
-      if (isIOS) {
-        installButton.style.display = 'inline-flex';
-        installButton2.style.display = 'inline-flex';
-      }
-
-      if (isIOS) {
-        iosInst.style.display = 'block';
-        androidInst.style.display = 'none';
-        desktopInst.style.display = 'none';
-      } else if (isAndroid) {
-        iosInst.style.display = 'none';
-        androidInst.style.display = 'block';
-        desktopInst.style.display = 'none';
-      } else {
-        iosInst.style.display = 'none';
-        androidInst.style.display = 'none';
-        desktopInst.style.display = 'block';
-      }
-      
-      // Variable para el prompt de instalación
-      let deferredPrompt;
-      
-      // Escuchar el evento beforeinstallprompt
-      // Fallback: mostrar botones si no se dispara el evento
-      setTimeout(() => {
-        if (!deferredPrompt) {
-          installButton.style.display = 'inline-flex';
-          installButton2.style.display = 'inline-flex';
-        }
-      }, 5000);
-
-      window.addEventListener('beforeinstallprompt', (e) => {
-        // Prevenir que el navegador muestre su propio prompt
-        e.preventDefault();
-        deferredPrompt = e;
-        console.log('Install prompt capturado');
-      });
-      
-      // Función para mostrar nuestro modal personalizado
-      function showInstallModal(e) {
-        // Prevenir que el navegador muestre su propio prompt
-        if (e) e.preventDefault();
-        installModal.style.display = 'flex';
-        return false;
-      }
-      
-      // Función para ocultar nuestro modal personalizado
-      function hideInstallModal(e) {
-        if (e) e.preventDefault();
-        installModal.style.display = 'none';
-        return false;
-      }
-      
-      // Añadir event listeners a los botones de instalación
-      if (installButton) {
-        // Reemplazar el evento de clic original para evitar comportamientos no deseados
-        
-        
-        // Añadir nuevo manejador con preventDefault
-        installButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          showInstallModal();
-          return false;
-        });
-      }
-      
-      if (installButton2) {
-        // Reemplazar el evento de clic original
-        
-        
-        // Añadir nuevo manejador con preventDefault
-        installButton2.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          showInstallModal();
-          return false;
-        });
-      }
-      
-      // Para cerrar el modal
-      if (closeBtn) {
-        closeBtn.addEventListener('click', hideInstallModal);
-      }
-      
-      // Cerrar el modal al hacer clic fuera de él
-      installModal.addEventListener('click', function(e) {
-        if (e.target === installModal) {
-          hideInstallModal();
-        }
-      });
-      
-      // Botón "Instalar ahora" dentro del modal
-      if (installNowBtn) {
-        installNowBtn.addEventListener('click', async function(e) {
-          e.preventDefault();
-          
-          if (deferredPrompt) {
-            // Si hay un prompt de instalación disponible, usarlo
-            hideInstallModal();
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User response: ${outcome}`);
-            deferredPrompt = null;
-          }
-          // Si no hay prompt disponible, mantener el modal visible
-          // para que el usuario siga las instrucciones manuales
-        });
-      }
-      
-      // Si la app ya está instalada
-      window.addEventListener('appinstalled', () => {
-        console.log('PWA instalada con éxito');
-        hideInstallModal();
-        
-        // Cambiar los botones a "Abrir App"
-        if (installButton) {
-          installButton.innerHTML = '<i class="fas fa-external-link-alt"></i> {% trans "Abrir App" %}';
-          installButton.addEventListener('click', () => {
-            window.location.href = "{% url 'recomendador:formulario' %}";
-          }, { once: true });
-        }
-        
-        if (installButton2) {
-          installButton2.innerHTML = '<i class="fas fa-external-link-alt"></i> {% trans "Abrir App" %}';
-          installButton2.addEventListener('click', () => {
-            window.location.href = "{% url 'recomendador:formulario' %}";
-          }, { once: true });
-        }
       });
     });
   </script>
