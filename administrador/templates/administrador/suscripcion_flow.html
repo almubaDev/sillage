@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="max-w-2xl mx-auto py-12">
+    <h1 class="text-3xl font-bold text-center mb-8">{% trans "Suscríbete a Sillage Premium con Flow" %}</h1>
+
+    <div class="bg-[var(--block)] rounded-xl shadow-lg p-6">
+        <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-[var(--accent)]">{% trans "Plan Mensual" %}</h2>
+            <div class="mt-2">
+                <span class="text-3xl font-bold">$4.990</span>
+                <span class="text-sm opacity-70">/ {% trans "mes" %}</span>
+            </div>
+            <p class="text-sm mt-2 opacity-70">{% trans "Renovación automática - Cancela cuando quieras" %}</p>
+        </div>
+
+        <div class="space-y-3 mb-6">
+            <div class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span>{% trans "Recomendaciones personalizadas" %}</span>
+            </div>
+            <div class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span>{% trans "Estudio centrado solo en tus perfumes" %}</span>
+            </div>
+            <div class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span>{% trans "Análisis climático y contextual" %}</span>
+            </div>
+            <div class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span>{% trans "Hasta 50 perfumes en tu colección" %}</span>
+            </div>
+            <div class="flex items-center">
+                <i class="fas fa-check text-green-500 mr-2"></i>
+                <span>{% trans "30 consultas mensuales" %}</span>
+            </div>
+        </div>
+
+        <!-- Cambio principal: Actualizar la acción del formulario -->
+        <form method="post" action="{% url 'administrador:iniciar_suscripcion_flow' %}">
+            {% csrf_token %}
+            <button type="submit" class="w-full py-3 bg-[var(--accent)] text-[var(--bg)] rounded-lg font-bold hover:brightness-110 transition">
+                {% trans "Suscribirse con Flow" %}
+                <div class="flex justify-center mt-4">
+                    <img src="https://www.flow.cl/images/header/logo-flow.svg" alt="Logo de Flow" class="h-10">
+                </div>
+            </button>
+        </form>
+
+
+
+        <!-- Añadir información sobre el proceso de suscripción -->
+        <div class="mt-6 p-4 bg-[var(--bg-alt)] rounded-lg text-sm">
+            <h3 class="font-bold mb-2">{% trans "Proceso de suscripción:" %}</h3>
+            <ol class="list-decimal pl-4 space-y-1">
+                <li>{% trans "Serás redirigido a Flow para registrar tu tarjeta de forma segura" %}</li>
+                <li>{% trans "Flow realizará cargos automáticos cada mes sin necesidad de volver a introducir tus datos" %}</li>
+                <li>{% trans "Puedes cancelar tu suscripción en cualquier momento desde tu perfil" %}</li>
+            </ol>
+        </div>
+
+        <p class="text-xs text-center mt-4 opacity-70">
+            {% trans "Al suscribirte, aceptas nuestros términos y condiciones" %}
+        </p>
+    </div>
+</div>
+{% endblock %}

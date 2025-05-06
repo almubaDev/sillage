@@ -24,6 +24,22 @@ class CustomLoginForm(AuthenticationForm):
 
 
 class CustomUserCreationForm(UserCreationForm):
+    first_name = forms.CharField(
+        label="Nombre",
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full px-3 py-2 border rounded',
+            'placeholder': 'Tu nombre'
+        })
+    )
+    last_name = forms.CharField(
+        label="Apellido",
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full px-3 py-2 border rounded',
+            'placeholder': 'Tu apellido'
+        })
+    )
     email = forms.EmailField(
         label="Correo electrónico",
         widget=forms.EmailInput(attrs={
@@ -45,7 +61,6 @@ class CustomUserCreationForm(UserCreationForm):
             'placeholder': '••••••••'
         })
     )
-
     class Meta:
         model = User
-        fields = ('email',)
+        fields = ('first_name', 'last_name', 'email')

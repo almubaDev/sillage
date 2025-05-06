@@ -8,19 +8,12 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Usar variables de entorno con valores por defecto solo para configuraciones no sensibles
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = "django-insecure-ed$du#r93c^-pj9l(-lwpr8=(nrsc3y02&0)#3hq8^z67&=hm("
 
-DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
+DEBUG = False
 
 #ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '0.0.0.0',
-    '.ngrok.io',  # Permite cualquier subdominio de ngrok.io
-    '.ngrok-free.app',  # Para las nuevas URLs de ngrok
-]
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'isler.pythonanywhere.com']
 
 
 CSRF_TRUSTED_ORIGINS = [
@@ -34,9 +27,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     'markdownify',
-    
+
     'users',
     'recomendador',
     'perfumes',
@@ -120,12 +113,12 @@ LOGGING = {
 # Base de datos
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'isler$default',
+        'USER': 'isler',
+        'PASSWORD': 'Anada!312$',  # La contraseña que configuraste
+        'HOST': 'isler.mysql.pythonanywhere-services.com',
+        'PORT': '',
     }
 }
 
@@ -178,25 +171,35 @@ LOGIN_URL = 'users:login'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # APIs externas - SIN valores por defecto para credenciales sensibles
-OPENWEATHER_API_KEY = os.getenv('OPENWEATHER_API_KEY')
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-GOOGLE_MAPS_API_KEY = os.getenv('GOOGLE_MAPS_API_KEY')
+OPENWEATHER_API_KEY="f3df07cd491790df460045d5478882fc"
+GEMINI_API_KEY="AIzaSyA8s0lcBuA5FI13sy1xZP2iGHhQ2AtiMtQ"
+GOOGLE_MAPS_API_KEY="AIzaSyBYW7kK_nRl4IHm8P5_MPqPDVPbMl7J-n0"
 
-# Configuración de PayPal
-PAYPAL_MODE = os.getenv('PAYPAL_MODE', 'sandbox')
+#Flow config
+FLOW_API_KEY="23F00F2E-779B-4C7B-9AD0-64E551L7C9FC"
+FLOW_SECRET_KEY="b15579cf8b18bf709eb98b692845112a357208ac"
+FLOW_API_URL="https://sandbox.flow.cl/api"  # URL para pruebas
+FLOW_SANDBOX=True
 
-if PAYPAL_MODE == 'sandbox':
-    PAYPAL_CLIENT_ID = os.getenv('PAYPAL_SANDBOX_CLIENT_ID')
-    PAYPAL_SECRET = os.getenv('PAYPAL_SANDBOX_SECRET')
-    PAYPAL_API_BASE = 'https://api-m.sandbox.paypal.com'
-    PAYPAL_WEBHOOK_ID = os.getenv('PAYPAL_SANDBOX_WEBHOOK_ID')
-    PAYPAL_PRODUCT_ID = os.getenv('PAYPAL_SANDBOX_PRODUCT_ID')
-    PAYPAL_PLAN_ID = os.getenv('PAYPAL_SANDBOX_PLAN_ID')
-else:  # 'live'
-    PAYPAL_CLIENT_ID = os.getenv('PAYPAL_LIVE_CLIENT_ID')
-    PAYPAL_SECRET = os.getenv('PAYPAL_LIVE_SECRET')
-    PAYPAL_API_BASE = 'https://api-m.paypal.com'
-    PAYPAL_WEBHOOK_ID = os.getenv('PAYPAL_LIVE_WEBHOOK_ID')
-    PAYPAL_PRODUCT_ID = os.getenv('PAYPAL_LIVE_PRODUCT_ID')
-    PAYPAL_PLAN_ID = os.getenv('PAYPAL_LIVE_PLAN_ID')
+
+
+
+
+# # Configuración de PayPal
+# PAYPAL_MODE = os.getenv('PAYPAL_MODE', 'sandbox')
+
+# if PAYPAL_MODE == 'sandbox':
+#     PAYPAL_CLIENT_ID = os.getenv('PAYPAL_SANDBOX_CLIENT_ID')
+#     PAYPAL_SECRET = os.getenv('PAYPAL_SANDBOX_SECRET')
+#     PAYPAL_API_BASE = 'https://api-m.sandbox.paypal.com'
+#     PAYPAL_WEBHOOK_ID = os.getenv('PAYPAL_SANDBOX_WEBHOOK_ID')
+#     PAYPAL_PRODUCT_ID = os.getenv('PAYPAL_SANDBOX_PRODUCT_ID')
+#     PAYPAL_PLAN_ID = os.getenv('PAYPAL_SANDBOX_PLAN_ID')
+# else:  # 'live'
+#     PAYPAL_CLIENT_ID = os.getenv('PAYPAL_LIVE_CLIENT_ID')
+#     PAYPAL_SECRET = os.getenv('PAYPAL_LIVE_SECRET')
+#     PAYPAL_API_BASE = 'https://api-m.paypal.com'
+#     PAYPAL_WEBHOOK_ID = os.getenv('PAYPAL_LIVE_WEBHOOK_ID')
+#     PAYPAL_PRODUCT_ID = os.getenv('PAYPAL_LIVE_PRODUCT_ID')
+#     PAYPAL_PLAN_ID = os.getenv('PAYPAL_LIVE_PLAN_ID')
 

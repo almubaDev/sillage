@@ -15,16 +15,16 @@ def perfil_view(request):
     from django.contrib.auth import get_user_model
     User = get_user_model()
     usuario_actual = User.objects.get(pk=request.user.pk)
-    
+
     # Para debugging - puedes quitar estos prints cuando todo funcione correctamente
     from django.utils import translation
     current_language = translation.get_language()
     print(f"Idioma actual: {current_language}")
     print(f"LANGUAGE_CODE en request: {request.LANGUAGE_CODE if hasattr(request, 'LANGUAGE_CODE') else 'No disponible'}")
     print(f"Estado de suscripción: {usuario_actual.suscrito}")
-    
+
     redirect_to = request.GET.get('next', request.path)
-    
+
     if request.method == 'POST':
         if 'unsubscribe' in request.POST:
             usuario_actual.suscrito = False
@@ -54,6 +54,11 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('users:perfil')
 
     def form_valid(self, form):
+        # El formulario ya incluye los campos first_name y last_name
+        # Así que no es necesario hacer nada especial aquí
         response = super().form_valid(form)
         login(self.request, self.object)  # Autologin tras registro
+        messages.success(self.request, _("Registro exitoso. ¡Bienvenido/a a Sillage!"))
         return response
+
+

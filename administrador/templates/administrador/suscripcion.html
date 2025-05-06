@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto py-12">
+    <h1 class="text-3xl font-bold text-center mb-8">{% trans "Suscríbete a Sillage Premium" %}</h1>
+
+    <div class="bg-[var(--block)] rounded-xl shadow-lg p-6">
+        <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-[var(--accent)]">{% trans "Plan Mensual" %}</h2>
+            <div class="mt-2">
+                <span class="text-3xl font-bold">$4.99</span>
+                <span class="text-sm opacity-70">/ {% trans "mes" %}</span>
+            </div>
+        </div>
+
+        <form method="post"  action="{% url 'administrador:procesar_pago' %}">
+            {% csrf_token %}
+            <button type="submit" class="w-full py-3 bg-[var(--accent)] text-[var(--bg)] rounded-lg font-bold hover:brightness-110 transition">
+                {% trans "Suscribirse ahora" %}
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
