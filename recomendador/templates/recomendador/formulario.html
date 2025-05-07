@@ -52,100 +52,158 @@
 </div>
 
 <!-- Modal multistep -->
-<dialog id="modal-recomendar" class="relative max-w-2xl w-full rounded-xl shadow-xl backdrop:bg-black/40">
-  <form method="post" class="bg-[var(--bg)] text-[var(--text)] p-6 space-y-6" enctype="multipart/form-data" onsubmit="return mostrarSpinner();">
+<dialog id="modal-recomendar" class="w-full h-full max-w-none max-h-none m-0 p-0 bg-[var(--bg)] overflow-hidden">
+  <form method="post" class="h-full" enctype="multipart/form-data" onsubmit="return mostrarSpinner();">
     {% csrf_token %}
-
-    <!-- Paso 1: Detalles del evento -->
-    <div id="paso1" class="step-content space-y-4">
-      <h2 class="text-xl font-bold mb-2">{% trans "Paso 1: Detalles del evento" %}</h2>
     
-      <div>
-        <label for="{{ form.fecha_evento.id_for_label }}" class="font-semibold">{% trans "Fecha del evento" %}</label>
-        {{ form.fecha_evento }}
-        {{ form.fecha_evento.errors }}
-      </div>
-    
-      <div>
-        <label for="{{ form.hora_evento.id_for_label }}" class="font-semibold">{% trans "Hora del evento" %}</label>
-        {{ form.hora_evento }}
-        {{ form.hora_evento.errors }}
-      </div>
-    
-      <div>
-        <label for="{{ form.ocasion.id_for_label }}" class="font-semibold">{% trans "Ocasión" %}</label>
-        {{ form.ocasion }}
-        {{ form.ocasion.errors }}
-      </div>
-    
-      <div>
-        <label for="{{ form.expectativa.id_for_label }}" class="font-semibold">{% trans "Expectativa emocional" %}</label>
-        {{ form.expectativa }}
-        {{ form.expectativa.errors }}
-      </div>
-    
-      <div>
-        <label for="{{ form.vestimenta.id_for_label }}" class="font-semibold">{% trans "Vestimenta" %}</label>
-        {{ form.vestimenta }}
-        {{ form.vestimenta.errors }}
-      </div>
-    
-      <div>
-        <label for="{{ form.lugar_tipo.id_for_label }}" class="font-semibold">{% trans "Tipo de lugar" %}</label>
-        {{ form.lugar_tipo }}
-        {{ form.lugar_tipo.errors }}
-      </div>
-    
-      <div>
-        <label for="{{ form.lugar_descripcion.id_for_label }}" class="font-semibold">{% trans "Descripción del lugar" %}</label>
-        {{ form.lugar_descripcion }}
-        {{ form.lugar_descripcion.errors }}
-      </div>
-    
-      <div class="flex justify-between items-center pt-4">
-        <button type="button"
-                onclick="document.getElementById('modal-recomendar').close();"
-                class="text-sm underline text-gray-300 hover:text-red-500 transition">
-          {% trans "Cancelar" %}
-        </button>
-        <button type="button"
-                onclick="mostrarPaso(2)"
-                class="bg-[var(--accent)] text-[var(--bg)] px-4 py-2 rounded hover:brightness-110">
-          {% trans "Continuar" %}
-        </button>
-      </div>
+    <!-- Barra superior y botón de cerrar -->
+    <div class="relative w-full bg-[var(--accent)] text-[var(--bg)] px-4 py-3 flex items-center justify-center">
+      <h2 class="text-xl font-bold">{% trans "Recomendador de perfumes" %}</h2>
+      <button type="button" onclick="document.getElementById('modal-recomendar').close();" 
+              class="absolute right-4 top-1/2 transform -translate-y-1/2 text-2xl">
+        &times;
+      </button>
     </div>
-    
-    <!-- Paso 2 -->
-    <div id="paso2" class="step-content space-y-4 hidden">
-      <h2 class="text-xl font-bold mb-2">{% trans "Paso 2: Selecciona la ubicación del evento" %}</h2>
 
-      <div class="flex gap-2">
-        <input id="autocomplete" type="text" placeholder="{% trans 'Buscar dirección...' %}"
-               class="flex-grow border px-3 py-2 rounded shadow" />
-        <button type="button" onclick="buscarLugar()"
-                class="bg-[var(--accent)] text-[var(--bg)] px-4 py-2 rounded hover:brightness-110">
-          {% trans "Buscar" %}
-        </button>
+    <!-- Contenedor de pasos -->
+    <div class="h-[calc(100%-60px)] overflow-y-auto p-6">
+      
+      <!-- Paso 1A: Fecha y Hora -->
+      <div id="paso1a" class="paso-content space-y-6 max-w-lg mx-auto">
+        <div class="text-center mb-8">
+          <h3 class="text-xl font-bold">{% trans "Paso 1: Fecha y hora" %}</h3>
+          <p class="text-sm text-gray-400 mt-2">{% trans "Información temporal del evento" %}</p>
+        </div>
+      
+        <div class="space-y-6">
+          <div>
+            <label for="{{ form.fecha_evento.id_for_label }}" class="font-semibold text-[var(--accent)]">{% trans "Fecha del evento" %}</label>
+            {{ form.fecha_evento }}
+            {{ form.fecha_evento.errors }}
+          </div>
+        
+          <div>
+            <label for="{{ form.hora_evento.id_for_label }}" class="font-semibold text-[var(--accent)]">{% trans "Hora del evento" %}</label>
+            {{ form.hora_evento }}
+            {{ form.hora_evento.errors }}
+          </div>
+        </div>
+        
+        <div class="pt-8 flex justify-end">
+          <button type="button" onclick="mostrarPaso('1b')"
+                  class="bg-[var(--accent)] text-[var(--bg)] px-6 py-3 rounded-lg hover:brightness-110 flex items-center gap-2">
+            {% trans "Siguiente" %} <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
       </div>
+      
+      <!-- Paso 1B: Ocasión y Expectativa -->
+      <div id="paso1b" class="paso-content space-y-6 max-w-lg mx-auto hidden">
+        <div class="text-center mb-8">
+          <h3 class="text-xl font-bold">{% trans "Paso 2: Ocasión y expectativa" %}</h3>
+          <p class="text-sm text-gray-400 mt-2">{% trans "Información sobre la intención del evento" %}</p>
+        </div>
+      
+        <div class="space-y-6">
+          <div>
+            <label for="{{ form.ocasion.id_for_label }}" class="font-semibold text-[var(--accent)]">{% trans "Ocasión" %}</label>
+            {{ form.ocasion }}
+            {{ form.ocasion.errors }}
+          </div>
+        
+          <div>
+            <label for="{{ form.expectativa.id_for_label }}" class="font-semibold text-[var(--accent)]">{% trans "Expectativa emocional" %}</label>
+            {{ form.expectativa }}
+            {{ form.expectativa.errors }}
+          </div>
+        </div>
+        
+        <div class="pt-8 flex justify-between">
+          <button type="button" onclick="mostrarPaso('1a')"
+                  class="border border-[var(--accent)] text-[var(--accent)] px-6 py-3 rounded-lg hover:bg-[var(--accent)]/10 flex items-center gap-2">
+            <i class="fas fa-arrow-left"></i> {% trans "Volver" %}
+          </button>
+          <button type="button" onclick="mostrarPaso('1c')"
+                  class="bg-[var(--accent)] text-[var(--bg)] px-6 py-3 rounded-lg hover:brightness-110 flex items-center gap-2">
+            {% trans "Siguiente" %} <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Paso 1C: Vestimenta y Lugar -->
+      <div id="paso1c" class="paso-content space-y-6 max-w-lg mx-auto hidden">
+        <div class="text-center mb-8">
+          <h3 class="text-xl font-bold">{% trans "Paso 3: Vestimenta y entorno" %}</h3>
+          <p class="text-sm text-gray-400 mt-2">{% trans "Detalles sobre tu apariencia y el lugar" %}</p>
+        </div>
+      
+        <div class="space-y-6">
+          <div>
+            <label for="{{ form.vestimenta.id_for_label }}" class="font-semibold text-[var(--accent)]">{% trans "Vestimenta" %}</label>
+            {{ form.vestimenta }}
+            {{ form.vestimenta.errors }}
+          </div>
+        
+          <div>
+            <label for="{{ form.lugar_tipo.id_for_label }}" class="font-semibold text-[var(--accent)]">{% trans "Tipo de lugar" %}</label>
+            {{ form.lugar_tipo }}
+            {{ form.lugar_tipo.errors }}
+          </div>
+        
+          <div>
+            <label for="{{ form.lugar_descripcion.id_for_label }}" class="font-semibold text-[var(--accent)]">{% trans "Descripción del lugar" %}</label>
+            {{ form.lugar_descripcion }}
+            {{ form.lugar_descripcion.errors }}
+          </div>
+        </div>
+        
+        <div class="pt-8 flex justify-between">
+          <button type="button" onclick="mostrarPaso('1b')"
+                  class="border border-[var(--accent)] text-[var(--accent)] px-6 py-3 rounded-lg hover:bg-[var(--accent)]/10 flex items-center gap-2">
+            <i class="fas fa-arrow-left"></i> {% trans "Volver" %}
+          </button>
+          <button type="button" onclick="mostrarPaso('2')"
+                  class="bg-[var(--accent)] text-[var(--bg)] px-6 py-3 rounded-lg hover:brightness-110 flex items-center gap-2">
+            {% trans "Siguiente" %} <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    
+      <!-- Paso 2 -->
+      <div id="paso2" class="paso-content space-y-4 hidden max-w-lg mx-auto">
+        <div class="text-center mb-8">
+          <h3 class="text-xl font-bold">{% trans "Paso 4: Selecciona la ubicación del evento" %}</h3>
+          <p class="text-sm text-gray-400 mt-2">{% trans "Para obtener datos climáticos precisos" %}</p>
+        </div>
 
-      <div id="map" class="w-full h-64 rounded shadow border border-[var(--accent)]"></div>
+        <div class="flex gap-2">
+          <input id="autocomplete" type="text" placeholder="{% trans 'Buscar dirección...' %}"
+                class="flex-grow border px-3 py-2 rounded shadow" />
+          <button type="button" onclick="buscarLugar()"
+                  class="bg-[var(--accent)] text-[var(--bg)] px-4 py-2 rounded hover:brightness-110">
+            {% trans "Buscar" %}
+          </button>
+        </div>
 
-      {{ form.latitud }}{{ form.longitud }}{{ form.lugar_nombre }}
+        <div id="map" class="w-full h-64 rounded shadow border border-[var(--accent)]"></div>
 
-      <div class="flex justify-between pt-4">
-        <button type="button" onclick="mostrarPaso(1)" class="underline text-sm text-gray-400">
-          {% trans "Volver" %}
-        </button>
-        <button type="submit" id="btnRecomendar" class="bg-[var(--accent)] text-[var(--bg)] px-4 py-2 rounded hover:brightness-110" disabled>
-          {% trans "Recomendar" %}
-        </button>
+        {{ form.latitud }}{{ form.longitud }}{{ form.lugar_nombre }}
+
+        <div class="pt-8 flex justify-between">
+          <button type="button" onclick="mostrarPaso('1c')"
+                 class="border border-[var(--accent)] text-[var(--accent)] px-6 py-3 rounded-lg hover:bg-[var(--accent)]/10 flex items-center gap-2">
+            <i class="fas fa-arrow-left"></i> {% trans "Volver" %}
+          </button>
+          <button type="submit" id="btnRecomendar" class="bg-[var(--accent)] text-[var(--bg)] px-6 py-3 rounded-lg hover:brightness-110 flex items-center gap-2" disabled>
+            {% trans "Recomendar" %} <i class="fas fa-magic"></i>
+          </button>
+        </div>
       </div>
     </div>
   </form>
 
   <!-- Indicador de carga -->
-  <div id="cargando-spinner" class="hidden absolute inset-0 bg-black/50 flex items-center justify-center z-50 rounded-xl">
+  <div id="cargando-spinner" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 rounded-xl">
     <div class="border-4 border-[var(--accent)] border-t-transparent rounded-full w-12 h-12 animate-spin"></div>
   </div>
 </dialog>
@@ -192,7 +250,7 @@ function buscarLugar() {
       obtenerDireccion(location.lat(), location.lng());
       activarBoton();
     } else {
-      alert("No se pudo encontrar la dirección.");
+      alert("{% trans 'No se pudo encontrar la dirección.' %}");
     }
   });
 }
@@ -216,9 +274,14 @@ function activarBoton() {
   document.getElementById("btnRecomendar").disabled = false;
 }
 
-function mostrarPaso(n) {
-  document.querySelectorAll(".step-content").forEach(e => e.classList.add("hidden"));
-  document.getElementById("paso" + n).classList.remove("hidden");
+function mostrarPaso(pasoId) {
+  document.querySelectorAll(".paso-content").forEach(e => e.classList.add("hidden"));
+  document.getElementById("paso" + pasoId).classList.remove("hidden");
+  
+  // Si es el paso del mapa, asegurarse de que se renderice correctamente
+  if (pasoId === '2' && map) {
+    google.maps.event.trigger(map, 'resize');
+  }
 }
 
 function mostrarSpinner() {
@@ -237,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     window.initMap = initMap;
   }
-  mostrarPaso(1);
+  mostrarPaso('1a');
 });
 </script>
 {% endblock %}
