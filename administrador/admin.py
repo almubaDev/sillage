@@ -1,26 +1,35 @@
 from django.contrib import admin
 from .models import Suscripcion, HistorialPago
 
+@admin.register(Suscripcion)
 class SuscripcionAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'activo', 'fecha_inicio', 'fecha_expiracion', 'monto', 'moneda', 'origen_pago')
-    list_filter = ('activo', 'renovacion_automatica')
-    search_fields = ('usuario__email',)
-    date_hierarchy = 'fecha_inicio'
+    list_display = (
+        'usuario', 'activo', 'fecha_inicio', 'fecha_expiracion',
+        'origen_pago', 'monto', 'moneda', 'renovacion_automatica', 'flow_customer_id'
+    )
+    list_filter = ('activo', 'renovacion_automatica', 'moneda')
+    search_fields = ('usuario__username', 'usuario__email', 'flow_customer_id')
+    readonly_fields = ('fecha_inicio', 'fecha_ultima_renovacion', 'ultima_actualizacion')
+
     fieldsets = (
-        ('Usuario', {
-            'fields': ('usuario', 'activo')
+        ('Información del usuario', {
+            'fields': ('usuario',)
         }),
-        ('Fechas', {
-            'fields': ('fecha_inicio', 'fecha_expiracion', 'fecha_ultima_renovacion')
+        ('Estado de la suscripción', {
+            'fields': ('activo', 'fecha_inicio', 'fecha_expiracion', 'fecha_ultima_renovacion')
         }),
-        ('Económico', {
-            'fields': ('monto', 'moneda', 'origen_pago', 'referencia_pago')
+        ('Pago', {
+            'fields': ('origen_pago', 'referencia_pago', 'monto', 'moneda', 'flow_customer_id')
         }),
         ('Configuración', {
             'fields': ('renovacion_automatica',)
         }),
+        ('Auditoría', {
+            'fields': ('ultima_actualizacion',)
+        }),
     )
 
+@admin.register(HistorialPago)
 class HistorialPagoAdmin(admin.ModelAdmin):
     list_display = ('usuario', 'fecha_pago', 'monto', 'moneda', 'metodo_pago', 'estado')
     list_filter = ('estado', 'metodo_pago')
@@ -37,6 +46,3 @@ class HistorialPagoAdmin(admin.ModelAdmin):
             'fields': ('estado', 'notas')
         }),
     )
-
-admin.site.register(Suscripcion, SuscripcionAdmin)
-admin.site.register(HistorialPago, HistorialPagoAdmin)

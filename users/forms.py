@@ -40,6 +40,14 @@ class CustomUserCreationForm(UserCreationForm):
             'placeholder': 'Tu apellido'
         })
     )
+    # rut = forms.CharField(
+    #     label="RUT",
+    #     required=True,
+    #     widget=forms.TextInput(attrs={
+    #         'class': 'w-full px-3 py-2 border rounded',
+    #         'placeholder': '11111111-1'
+    #     })
+    # )
     email = forms.EmailField(
         label="Correo electrónico",
         widget=forms.EmailInput(attrs={

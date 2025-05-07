@@ -7,40 +7,48 @@
     <form method="post" class="space-y-5">
         {% csrf_token %}
         {{ form.non_field_errors }}
-        
+
         <!-- Campo de nombre -->
         <div>
             {{ form.first_name.label_tag }}
             {{ form.first_name }}
             {{ form.first_name.errors }}
         </div>
-        
+
         <!-- Campo de apellido -->
         <div>
             {{ form.last_name.label_tag }}
             {{ form.last_name }}
             {{ form.last_name.errors }}
         </div>
-        
+
+
+        <!-- Campo de RUT -->
+        <!--<div>-->
+        <!--    {{ form.rut.label_tag }}-->
+        <!--    {{ form.rut }}-->
+        <!--    {{ form.rut.errors }}-->
+        <!--</div>-->
+
         <!-- Otros campos (email y contraseñas) -->
         <div>
             {{ form.email.label_tag }}
             {{ form.email }}
             {{ form.email.errors }}
         </div>
-        
+
         <div>
             {{ form.password1.label_tag }}
             {{ form.password1 }}
             {{ form.password1.errors }}
         </div>
-        
+
         <div>
             {{ form.password2.label_tag }}
             {{ form.password2 }}
             {{ form.password2.errors }}
         </div>
-        
+
         <button type="submit"
                 class="w-full px-4 py-2 rounded bg-[var(--accent)] text-[var(--bg)] hover:brightness-110 font-semibold transition">
             {% trans "Registrarse" %}

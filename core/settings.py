@@ -13,7 +13,7 @@ SECRET_KEY = "django-insecure-ed$du#r93c^-pj9l(-lwpr8=(nrsc3y02&0)#3hq8^z67&=hm(
 DEBUG = False
 
 #ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'isler.pythonanywhere.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'sillage.forgeapp.cl', 'webapp-2581698.pythonanywhere.com']
 
 
 CSRF_TRUSTED_ORIGINS = [
@@ -114,11 +114,11 @@ LOGGING = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'isler$default',
-        'USER': 'isler',
+        'NAME': 'ForgeApp$sillage',
+        'USER': 'ForgeApp',
         'PASSWORD': 'Anada!312$',  # La contraseña que configuraste
-        'HOST': 'isler.mysql.pythonanywhere-services.com',
-        'PORT': '',
+        'HOST': 'ForgeApp.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
     }
 }
 
@@ -178,9 +178,8 @@ GOOGLE_MAPS_API_KEY="AIzaSyBYW7kK_nRl4IHm8P5_MPqPDVPbMl7J-n0"
 #Flow config
 FLOW_API_KEY="23F00F2E-779B-4C7B-9AD0-64E551L7C9FC"
 FLOW_SECRET_KEY="b15579cf8b18bf709eb98b692845112a357208ac"
-FLOW_API_URL="https://sandbox.flow.cl/api"  # URL para pruebas
-FLOW_SANDBOX=True
-
+FLOW_API_URL = "https://www.flow.cl/api" # URL para pruebas
+FLOW_SANDBOX=False
 
 
 
